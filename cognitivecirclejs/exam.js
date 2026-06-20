@@ -301,6 +301,9 @@ function submitExam() {
 
   const questions  = exam.questions;
   const total      = questions.length;
+  console.log('[DEBUG] Submitting exam with', total, 'questions');
+  console.log('[DEBUG] Questions:', questions);
+  
   let correct = 0, wrong = 0, skipped = 0, marksEarned = 0;
 
   questions.forEach((q, i) => {
@@ -343,8 +346,12 @@ function submitExam() {
     list.push(result);
     resultIndex = list.length - 1;
     localStorage.setItem('cc_results', JSON.stringify(list));
+    console.log('[DEBUG] Saved result to localStorage at index', resultIndex, '| Total results:', list.length);
+    console.log('[DEBUG] Result object:', result);
     localStorage.removeItem('cc_session');
-  } catch (_) {}
+  } catch (err) {
+    console.error('[DEBUG] Error saving result:', err);
+  }
 
   // ── Also save to Firebase so admins see it on any device ──
   if (window.CCDB) {
@@ -365,7 +372,9 @@ function submitExam() {
   // Go straight to the detailed results page (with fallback index parameter)
   setTimeout(() => {
     const params = resultIndex >= 0 ? `?result=${resultIndex}` : '';
-    window.location.href = 'results.html' + params;
+    const redirectUrl = 'results.html' + params;
+    console.log('[DEBUG] Redirecting to:', redirectUrl);
+    window.location.href = redirectUrl;
   }, 800);
 }
 

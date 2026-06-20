@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug – Cognitive Circle</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+        }
+        .storage-section {
+            margin-bottom: 20px;
+        }
+        .storage-key {
+            font-weight: bold;
+            color: #2563eb;
+            margin-top: 10px;
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .storage-value {
+            background: #f9f9f9;
+            padding: 10px;
+            border-left: 3px solid #2563eb;
+            margin: 5px 0;
+            font-family: monospace;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1e40af;
+        }
+        .button-group {
+            margin: 20px 0;
+        }
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #16a34a;
+            background: #dcfce7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #2563eb;
+            background: #dbeafe;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🔧 Cognitive Circle – Debug Panel</h1>
+
+<div class="card">
+    <h2>📱 localStorage Contents</h2>
+    <div class="button-group">
+        <button onclick="refreshStorage()">🔄 Refresh</button>
+        <button onclick="clearAllData()">🗑️ Clear All Data</button>
+    </div>
+    
+    <div id="storageDisplay"></div>
+</div>
+
+<div class="card">
+    <h2>🧪 Test Results Flow</h2>
+    <p>Use these buttons to create test data and verify the results page loads correctly.</p>
+    
+    <div class="button-group">
+        <button onclick="createTestResult()">📝 Create Test Result</button>
+        <button onclick="viewTestResult()">👁️ View Results Page</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+    
+    <div id="testOutput"></div>
+</div>
+
+<div class="card">
+    <h2>📊 Data Analysis</h2>
+    <div id="analysis"></div>
+</div>
+
+<script>
+function refreshStorage() {
+    const display = document.getElementById('storageDisplay');
+    display.innerHTML = '';
+    
+    const keys = ['cc_session', 'cc_candidate', 'cc_results', 'cc_exams', 'qb_questions', 'qb_subjects'];
+    
+    keys.forEach(key => {
+        const raw = localStorage.getItem(key);
+        const html = `
+            <div class="storage-section">
+                <div class="storage-key">${key}</div>
+                <div class="storage-value">${raw ? (raw.length > 100 ? raw.substring(0, 200) + '...' : raw) : '<em>empty</em>'}</div>
+                <small>Size: ${raw ? (raw.length / 1024).toFixed(2) + ' KB' : '0 KB'}</small>
+            </div>
+        `;
+        display.innerHTML += html;
+    });
+    
+    analyzeData();
+}
+
+function analyzeData() {
+    const analysis = document.getElementById('analysis');
+    let html = '<h3>Analysis</h3>';
+    
+    try {
+        const results = JSON.parse(localStorage.getItem('cc_results') || '[]');
+        html += `<div class="info">✓ cc_results: ${results.length} result(s) found</div>`;
+        
+        if (results.length > 0) {
+            const latest = results[results.length - 1];
+            html += `<div class="success">✓ Latest result: ${latest.examTitle} by ${latest.candidate?.name || 'Unknown'}</div>`;
+            if (latest.questions) {
+                html += `<div class="success">✓ Questions saved: ${latest.questions.length} questions</div>`;
+            } else {
+                html += `<div class="error">✗ Questions NOT saved with result</div>`;
+            }
+        } else {
+            html += `<div class="error">✗ No results found in localStorage</div>`;
+        }
+        
+        const session = JSON.parse(localStorage.getItem('cc_session') || 'null');
+        if (session) {
+            html += `<div class="info">✓ Active exam session detected</div>`;
+        } else {
+            html += `<div class="error">✗ No active exam session</div>`;
+        }
+        
+    } catch (e) {
+        html += `<div class="error">✗ Error parsing localStorage: ${e.message}</div>`;
+    }
+    
+    analysis.innerHTML = html;
+}
+
+function createTestResult() {
+    const output = document.getElementById('testOutput');
+    
+    try {
+        // Create a sample result object
+        const testResult = {
+            examId: 'test-exam-001',
+            examTitle: 'Sample Math Test',
+            subject: 'Mathematics',
+            candidate: {
+                name: 'Test Student',
+                regNumber: 'TEST001'
+            },
+            startTime: new Date(Date.now() - 30 * 60000).toISOString(), // 30 min ago
+            submitTime: new Date().toISOString(),
+            total: 5,
+            correct: 3,
+            wrong: 1,
+            skipped: 1,
+            marksEarned: 30,
+            totalMarks: 50,
+            percentage: 60,
+            answers: { 0: 'A', 1: 'B', 2: 'A', 3: '', 4: 'C' },
+            questions: [
+                { id: 1, question: '2 + 2 = ?', options: { A: '4', B: '5', C: '3' }, correctAnswer: 'A', marks: 10, topic: 'Basic Math' },
+                { id: 2, question: '10 × 5 = ?', options: { A: '50', B: '51', C: '49' }, correctAnswer: 'A', marks: 10, topic: 'Multiplication' },
+                { id: 3, question: 'What is 15 / 3?', options: { A: '5', B: '6', C: '4' }, correctAnswer: 'A', marks: 10, topic: 'Division' },
+                { id: 4, question: 'Solve: x + 5 = 12', options: { A: '7', B: '8', C: '6' }, correctAnswer: 'A', marks: 10, topic: 'Algebra' },
+                { id: 5, question: 'What is √16?', options: { A: '4', B: '5', C: '3' }, correctAnswer: 'A', marks: 10, topic: 'Radicals' }
+            ]
+        };
+        
+        // Save to localStorage
+        const existing = JSON.parse(localStorage.getItem('cc_results') || '[]');
+        existing.push(testResult);
+        localStorage.setItem('cc_results', JSON.stringify(existing));
+        
+        output.innerHTML = `
+            <div class="success">✓ Test result created successfully!</div>
+            <pre>${JSON.stringify(testResult, null, 2)}</pre>
+        `;
+        
+        refreshStorage();
+    } catch (e) {
+        output.innerHTML = `<div class="error">✗ Error: ${e.message}</div>`;
+    }
+}
+
+function viewTestResult() {
+    try {
+        const results = JSON.parse(localStorage.getItem('cc_results') || '[]');
+        if (results.length === 0) {
+            document.getElementById('testOutput').innerHTML = `<div class="error">✗ No results found. Create a test result first.</div>`;
+            return;
+        }
+        
+        // Open results.html and let it load the latest result
+        window.location.href = 'results.html';
+    } catch (e) {
+        document.getElementById('testOutput').innerHTML = `<div class="error">✗ Error: ${e.message}</div>`;
+    }
+}
+
+function clearResults() {
+    if (confirm('Are you sure you want to clear all results?')) {
+        localStorage.removeItem('cc_results');
+        document.getElementById('testOutput').innerHTML = `<div class="success">✓ Results cleared</div>`;
+        refreshStorage();
+    }
+}
+
+function clearAllData() {
+    if (confirm('Are you sure you want to clear ALL data? This will reset the entire app.')) {
+        const keys = ['cc_session', 'cc_candidate', 'cc_results', 'cc_exams', 'qb_questions', 'qb_subjects'];
+        keys.forEach(key => localStorage.removeItem(key));
+        document.getElementById('storageDisplay').innerHTML = '<div class="success">✓ All data cleared</div>';
+        refreshStorage();
+    }
+}
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', refreshStorage);
+</script>
+
+</body>
+</html>

@@ -48,13 +48,32 @@ function loadResult() {
     const idx    = params.get('result');
 
     const raw  = localStorage.getItem('cc_results');
-    if (!raw) return null;
+    console.log('[DEBUG] cc_results raw:', raw);
+    
+    if (!raw) {
+      console.log('[DEBUG] cc_results is empty');
+      return null;
+    }
+    
     const list = JSON.parse(raw);
-    if (!Array.isArray(list) || !list.length) return null;
+    console.log('[DEBUG] cc_results parsed:', list);
+    
+    if (!Array.isArray(list) || !list.length) {
+      console.log('[DEBUG] cc_results is not an array or is empty');
+      return null;
+    }
 
-    if (idx !== null && list[+idx]) return list[+idx];
+    if (idx !== null && list[+idx]) {
+      console.log('[DEBUG] Returning result at index', idx);
+      return list[+idx];
+    }
+    
+    console.log('[DEBUG] Returning latest result');
     return list[list.length - 1]; // latest result
-  } catch (_) { return null; }
+  } catch (err) { 
+    console.error('[DEBUG] Error loading result:', err);
+    return null; 
+  }
 }
 
 // ─── Render hero ─────────────────────────────────
@@ -153,13 +172,19 @@ function renderCorrections() {
   const r    = result;
   const list = document.getElementById('correctionsList');
 
+  console.log('[DEBUG] renderCorrections - result object:', r);
+  console.log('[DEBUG] result.questions:', r?.questions);
+
   // Primary: questions saved directly in the result object
   // Fallback: look them up from the saved exam in cc_exams
   let examQs = (Array.isArray(r.questions) && r.questions.length)
     ? r.questions
     : loadQuestionsFromExamStore(r);
 
+  console.log('[DEBUG] examQs to render:', examQs);
+
   if (!examQs.length) {
+    console.log('[DEBUG] No questions found for rendering');
     list.innerHTML =
       '<div style="padding:40px;text-align:center;color:var(--gray-400);">' +
         '<i class="fa-solid fa-circle-info" style="font-size:32px;margin-bottom:12px;display:block;"></i>' +
