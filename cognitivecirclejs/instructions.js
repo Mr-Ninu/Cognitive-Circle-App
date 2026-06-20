@@ -10,6 +10,7 @@
 
 let currentExam      = null;
 let currentCandidate = null;
+let currentExamPayload = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadCandidate();
@@ -37,20 +38,22 @@ function loadCandidate() {
 /* ─── Load exam details ─────────────────────── */
 async function loadExam() {
   const params = new URLSearchParams(window.location.search);
+  const payloadParam = params.get('payload') || (currentCandidate && currentCandidate.examPayload);
   const examId = params.get('exam') || (currentCandidate && currentCandidate.examId);
 
   /* Show loading placeholder */
   const startBtn = document.getElementById('btnStartExam');
   if (startBtn) startBtn.disabled = true;
 
-  /* ── Firebase first ── */
-  if (window.CCDB) {
-    try {
-      currentExam = await CCDB.getPublishedExam(examId);
-    } catch (_) { currentExam = null; }
+  /* ── Direct payload share first ── */
+  if (payloadParam) {
+    currentExam = parseExamPayload(payloadParam);
+    if (currentExam) {
+      currentExamPayload = payloadParam;
+    }
   }
 
-  /* ── Fallback: localStorage ── */
+  /* ── Firebase first ── */
   if (!currentExam) {
     try {
       const raw  = localStorage.getItem('cc_exams') || '[]';
@@ -162,8 +165,25 @@ function startExam() {
   if (label) label.textContent = 'Starting…';
 
   setTimeout(() => {
-    window.location.href = `exam.html?exam=${currentExam.id}`;
+    let nextUrl = 'exam.html';
+    if (currentExamPayload) {
+      nextUrl += `?payload=${encodeURIComponent(currentExamPayload)}`;
+    } else if (currentExam) {
+      nextUrl += `?exam=${currentExam.id}`;
+    }
+    window.location.href = nextUrl;
   }, 500);
+}
+
+function parseExamPayload(payload) {
+  try {
+    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+    const json = decodeURIComponent(escape(atob(padded)));
+    return JSON.parse(json);
+  } catch (_) {
+    return null;
+  }
 }
 
 /* ─── Utility ───────────────────────────────── */

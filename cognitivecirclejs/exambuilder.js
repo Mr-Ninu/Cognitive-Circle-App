@@ -671,10 +671,10 @@ function startNewExam() {
 }
 
 function showPublishModal(exam) {
-  // Build the student link: login.html?exam=<id>
+  // Build the student link: login.html?payload=<encoded exam>
   // Works for both local files and any hosted domain
   const base = window.location.href.replace(/exambuilder\.html.*$/, '');
-  const link = `${base}login.html?exam=${exam.id}`;
+  const link = `${base}login.html?payload=${encodeURIComponent(encodeExamPayload(exam))}`;
 
   document.getElementById('publishModalSub').textContent =
     `"${exam.title}" is now live — ${exam.numQuestions} questions · ${exam.subject || 'No subject'}`;
@@ -705,6 +705,16 @@ function downloadExamsJson() {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+function encodeExamPayload(exam) {
+  try {
+    const json = JSON.stringify(exam);
+    const b64 = btoa(unescape(encodeURIComponent(json)));
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  } catch (_) {
+    return '';
+  }
 }
 
 function copyExamLink() {

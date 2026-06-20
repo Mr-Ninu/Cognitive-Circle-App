@@ -9,6 +9,7 @@
 'use strict';
 
 let currentExam = null;
+let currentExamPayload = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   loadExam();
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadExam() {
   const params = new URLSearchParams(window.location.search);
   const examId = params.get('exam');
+  const payloadParam = params.get('payload');
 
   /* Show a subtle loading indicator on the button */
   const btn   = document.getElementById('btnStart');
@@ -25,16 +27,15 @@ async function loadExam() {
   if (btn) btn.disabled = true;
   if (label) label.textContent = 'Loading exam…';
 
-  /* ── Try Firebase first, then localStorage ── */
-  if (window.CCDB) {
-    try {
-      currentExam = await CCDB.getPublishedExam(examId);
-    } catch (_) {
-      currentExam = null;
+  /* ── Direct payload share first ── */
+  if (payloadParam) {
+    currentExam = parseExamPayload(payloadParam);
+    if (currentExam) {
+      currentExamPayload = payloadParam;
     }
   }
 
-  /* ── Fallback: localStorage ── */
+  /* ── Try Firebase first, then localStorage ── */
   if (!currentExam) {
     try {
       const raw  = localStorage.getItem('cc_exams') || '[]';
@@ -145,6 +146,7 @@ function handleSubmit(e) {
     regNumber: reg,
     loginTime: new Date().toISOString(),
     examId:    currentExam ? currentExam.id : null,
+    examPayload: currentExamPayload,
   };
 
   try { localStorage.setItem('cc_candidate', JSON.stringify(candidate)); } catch (_) {}
@@ -155,9 +157,22 @@ function handleSubmit(e) {
   label.textContent = 'Loading…';
 
   setTimeout(() => {
-    const examParam = currentExam ? `?exam=${currentExam.id}` : '';
-    window.location.href = `instructions.html${examParam}`;
+    const nextParam = currentExamPayload
+      ? `?payload=${encodeURIComponent(currentExamPayload)}`
+      : (currentExam ? `?exam=${currentExam.id}` : '');
+    window.location.href = `instructions.html${nextParam}`;
   }, 500);
+}
+
+function parseExamPayload(payload) {
+  try {
+    const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+    const json = decodeURIComponent(escape(atob(padded)));
+    return JSON.parse(json);
+  } catch (_) {
+    return null;
+  }
 }
 
 /* ─── Toast ──────────────────────────────────── */
