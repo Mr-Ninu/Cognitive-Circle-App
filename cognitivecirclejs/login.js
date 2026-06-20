@@ -53,7 +53,31 @@ async function loadExam() {
     }
   }
 
+  /* ── Fallback: shared static JSON file on the site ── */
+  if (!currentExam) {
+    currentExam = await loadSharedExam(examId);
+  }
+
   renderExamBanner();
+}
+
+async function loadSharedExam(examId) {
+  try {
+    const response = await fetch('../exams.json', { cache: 'no-store' });
+    if (!response.ok) return null;
+    const list = await response.json();
+    if (!Array.isArray(list)) return null;
+
+    if (examId) {
+      const found = list.find(e => e.id === examId);
+      if (found) return found;
+    }
+
+    const published = list.filter(e => e.status === 'published');
+    return published.length ? published[published.length - 1] : (list[list.length - 1] || null);
+  } catch (_) {
+    return null;
+  }
 }
 
 function renderExamBanner() {

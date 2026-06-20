@@ -686,7 +686,25 @@ function showPublishModal(exam) {
   copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
   copyBtn.classList.remove('copied');
 
+  // Store the exam object for JSON download
+  window.__publishedExam = exam;
+
   document.getElementById('publishModal').classList.add('open');
+}
+
+function downloadExamsJson() {
+  var exam = window.__publishedExam;
+  if (!exam) return;
+  var data = [exam];
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url;
+  link.download = 'exams.json';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 function copyExamLink() {

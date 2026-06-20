@@ -23,12 +23,13 @@
 
   /* ── STEP 1: PASTE YOUR FIREBASE CONFIG HERE ─────────────────── */
   var CONFIG = {
-    apiKey:            'AIzaSyB3aIYL6t8M31zQiOZNkskG1q6fbjMzScQ',
-    authDomain:        'cognitvecircle-webapp.firebaseapp.com',
-    projectId:         'cognitvecircle-webapp',
-    storageBucket:     'cognitvecircle-webapp.firebasestorage.app',
-    messagingSenderId: '261538612393',
-    appId:             '1:261538612393:web:52894004805253b42595b8',
+    apiKey:            'AIzaSyD0ZbILLt3BUf1jkX8_qxOmn-0WWmB09yg',
+    authDomain:        'the-cognitive-circle-adm-ea2c1.firebaseapp',
+    projectId:         'the-cognitive-circle-adm-ea2c1',
+    storageBucket:     'the-cognitive-circle-adm-ea2c1.firebasestorage.app',
+    messagingSenderId: '763415223905',
+    appId:             '1:763415223905:web:e5562f06a2e2b6e3151420',
+     measurementId: "G-99T9561E1E"
   };
   /* ── end config ───────────────────────────────────────────────── */
 

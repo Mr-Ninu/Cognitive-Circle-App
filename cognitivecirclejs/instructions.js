@@ -67,6 +67,11 @@ async function loadExam() {
     } catch (_) { currentExam = null; }
   }
 
+  /* ── Fallback: shared static JSON file on the site ── */
+  if (!currentExam) {
+    currentExam = await loadSharedExam(examId);
+  }
+
   if (!currentExam) {
     const overlay = document.getElementById('noExamOverlay');
     if (overlay) overlay.style.display = 'flex';
@@ -101,6 +106,25 @@ function renderExamDetails() {
 function formatType(type) {
   const map = { practice: 'Practice Test', mock: 'Mock Exam', quiz: 'Quiz', assignment: 'Assignment' };
   return map[type] || (type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Exam');
+}
+
+async function loadSharedExam(examId) {
+  try {
+    const response = await fetch('../exams.json', { cache: 'no-store' });
+    if (!response.ok) return null;
+    const list = await response.json();
+    if (!Array.isArray(list)) return null;
+
+    if (examId) {
+      const found = list.find(e => e.id === examId);
+      if (found) return found;
+    }
+
+    const published = list.filter(e => e.status === 'published');
+    return published.length ? published[published.length - 1] : (list[list.length - 1] || null);
+  } catch (_) {
+    return null;
+  }
 }
 
 /* ─── Agreement checkbox ────────────────────── */
