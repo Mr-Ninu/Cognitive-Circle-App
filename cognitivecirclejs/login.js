@@ -166,6 +166,14 @@ function handleSubmit(e) {
 
 function parseExamPayload(payload) {
   try {
+    // Try LZ-String compressed payload first (shorter links)
+    if (typeof LZString === 'object' && LZString.decompressFromEncodedURIComponent) {
+      try {
+        const dec = LZString.decompressFromEncodedURIComponent(payload);
+        if (dec) return JSON.parse(dec);
+      } catch (_) {}
+    }
+    // Fallback to legacy base64 URL-safe encoding
     const b64 = payload.replace(/-/g, '+').replace(/_/g, '/');
     const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
     const json = decodeURIComponent(escape(atob(padded)));

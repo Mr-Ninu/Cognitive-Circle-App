@@ -710,6 +710,11 @@ function downloadExamsJson() {
 function encodeExamPayload(exam) {
   try {
     const json = JSON.stringify(exam);
+    // Prefer LZ-String compressed, URL-safe output when available
+    if (typeof LZString === 'object' && LZString.compressToEncodedURIComponent) {
+      return LZString.compressToEncodedURIComponent(json);
+    }
+    // Legacy base64 URL-safe fallback
     const b64 = btoa(unescape(encodeURIComponent(json)));
     return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   } catch (_) {

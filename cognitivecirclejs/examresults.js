@@ -55,18 +55,33 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Load data ─────────────────────────────────────────────
 async function loadResults() {
   showLoading(true);
+
+  // On GitHub Pages or static hosting there is no /api/results endpoint,
+  // so read from localStorage directly.
+  let useApi = false;
   try {
-    const res = await fetch('/api/results');
-    if (!res.ok) throw new Error('API error');
-    allResults = await res.json();
-  } catch (_) {
-    // Fallback to localStorage
-    try {
-      allResults = JSON.parse(localStorage.getItem('cc_results') || '[]');
-    } catch (_2) {
-      allResults = [];
+    const url = new URL(window.location.href);
+    if (url.hostname !== 'mr-ninu.github.io' && url.hostname !== 'localhost') {
+      useApi = false;
+    } else {
+      useApi = false;
     }
+  } catch (_) {
+    useApi = false;
   }
+
+  if (useApi) {
+    try {
+      const res = await fetch('/api/results');
+      if (!res.ok) throw new Error('API error');
+      allResults = await res.json();
+    } catch (_) {
+      allResults = readResultsFromStorage();
+    }
+  } else {
+    allResults = readResultsFromStorage();
+  }
+
   showLoading(false);
   populateFilters();      // ← now runs AFTER allResults is loaded
   refreshNotifications(); // build bell list from results
@@ -76,6 +91,15 @@ async function loadResults() {
   renderTopStudents();
   renderQA();
 }
+
+function readResultsFromStorage() {
+  try {
+    return JSON.parse(localStorage.getItem('cc_results') || '[]');
+  } catch (_) {
+    return [];
+  }
+}
+
 
 // ── Populate Exam + Subject dropdowns ─────────────────────
 function populateFilters() {

@@ -295,6 +295,18 @@ function confirmEndExam() {
 }
 
 // ─── Submit Exam ─────────────────────────────────
+function slimQuestions(questions) {
+  return questions.map(q => ({
+    id: q.id,
+    type: q.type,
+    question: q.question,
+    options: q.options,
+    correctAnswer: q.correctAnswer,
+    marks: q.marks,
+    explanation: q.explanation
+  }));
+}
+
 function submitExam() {
   clearInterval(exam.timer);
   closeModal('endModal');
@@ -302,8 +314,7 @@ function submitExam() {
   const questions  = exam.questions;
   const total      = questions.length;
   console.log('[DEBUG] Submitting exam with', total, 'questions');
-  console.log('[DEBUG] Questions:', questions);
-  
+
   let correct = 0, wrong = 0, skipped = 0, marksEarned = 0;
 
   questions.forEach((q, i) => {
@@ -311,7 +322,7 @@ function submitExam() {
     if (!chosen && chosen !== 0) { skipped++; return; }
 
     const correctAns = q.correctAnswer;
-    if (!correctAns) { return; } // can't grade without answer
+    if (!correctAns) { return; }
 
     if (chosen === correctAns) {
       correct++;
@@ -324,7 +335,7 @@ function submitExam() {
   const totalMarks = questions.reduce((s, q) => s + (q.marks || 1), 0);
   const pct        = total > 0 ? Math.round((correct / total) * 100) : 0;
 
-  // Save results
+  // Save results with slimmed questions to avoid QuotaExceededError
   const result = {
     examId:      exam.session.exam.id,
     examTitle:   exam.session.exam.title,
@@ -336,19 +347,39 @@ function submitExam() {
     marksEarned, totalMarks,
     percentage:  pct,
     answers:     exam.answers,
-    questions:   exam.questions,   // stored so corrections page can display without re-lookup
+    questions:   slimQuestions(exam.questions),
   };
 
   let resultIndex = -1;
+  let saved = false;
   try {
     const raw  = localStorage.getItem('cc_results') || '[]';
     const list = JSON.parse(raw) || [];
     list.push(result);
     resultIndex = list.length - 1;
-    localStorage.setItem('cc_results', JSON.stringify(list));
-    console.log('[DEBUG] Saved result to localStorage at index', resultIndex, '| Total results:', list.length);
-    console.log('[DEBUG] Result object:', result);
-    localStorage.removeItem('cc_session');
+
+    try {
+      localStorage.setItem('cc_results', JSON.stringify(list));
+      saved = true;
+    } catch (quotaErr) {
+      console.warn('[DEBUG] QuotaExceededError, trying to drop oldest entries...', quotaErr);
+      for (let drop = 1; drop <= 6 && !saved; drop++) {
+        if (list.length > drop) {
+          const trimmed = list.slice(drop);
+          try {
+            localStorage.setItem('cc_results', JSON.stringify(trimmed));
+            resultIndex = trimmed.length - 1;
+            saved = true;
+            console.log('[DEBUG] Dropped', drop, 'oldest result(s), saved successfully.');
+          } catch (e) { /* keep trying */ }
+        }
+      }
+      if (!saved) throw quotaErr;
+    }
+
+    const verify = JSON.parse(localStorage.getItem('cc_results') || '[]');
+    console.log('[DEBUG] Post-save cc_results length:', verify.length, 'index:', resultIndex);
+    if (saved) localStorage.removeItem('cc_session');
   } catch (err) {
     console.error('[DEBUG] Error saving result:', err);
   }
@@ -356,24 +387,18 @@ function submitExam() {
   // ── Also save to Firebase so admins see it on any device ──
   if (window.CCDB) {
     CCDB.saveResult(result).catch(function () {});
-    // Emit event so other pages can listen for result updates
     window.dispatchEvent(new CustomEvent('resultSubmitted', { detail: result }));
   }
 
   // Mark as submitted so the "unsaved changes" guard doesn't block navigation
   exam.submitted = true;
 
-  // Show success notification
   showToast('✓ Exam submitted successfully! Redirecting to results…', 'success');
 
-  // Emit event so dashboard/admin pages can listen for new results
-  window.dispatchEvent(new CustomEvent('resultSubmitted', { detail: result }));
-
-  // Go straight to the detailed results page (with fallback index parameter)
   setTimeout(() => {
     const params = resultIndex >= 0 ? `?result=${resultIndex}` : '';
     const redirectUrl = 'results.html' + params;
-    console.log('[DEBUG] Redirecting to:', redirectUrl);
+    console.log('[DEBUG] Redirecting to:', redirectUrl, '| resultIndex:', resultIndex);
     window.location.href = redirectUrl;
   }, 800);
 }
