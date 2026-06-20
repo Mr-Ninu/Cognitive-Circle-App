@@ -681,27 +681,53 @@ body {
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
-@media (max-width: 900px) {
-  :root { --sidebar-w: 240px; }
+/* Large screens — wider sidebar and more breathing room */
+@media (min-width: 1200px) {
+  :root { --sidebar-w: 360px; }
+  .exam-main { grid-template-columns: 1fr var(--sidebar-w); }
+  .question-panel { padding: 32px; }
+  .q-text { font-size: 18px; line-height: 1.7; }
+  .q-image { max-height: 360px; }
+  .sidebar-panel { position: sticky; top: calc(var(--topbar-h) + var(--strip-h)); height: calc(100vh - var(--topbar-h) - var(--strip-h)); }
+  .q-grid { grid-template-columns: repeat(10, 1fr); }
+}
+
+/* Medium screens — comfortable two-column layout */
+@media (min-width: 900px) and (max-width: 1199px) {
+  :root { --sidebar-w: 300px; }
+  .exam-main { grid-template-columns: 1fr var(--sidebar-w); }
+  .question-panel { padding: 24px; }
+  .q-text { font-size: 17px; }
   .q-grid { grid-template-columns: repeat(8, 1fr); }
 }
 
-@media (max-width: 700px) {
+/* Small screens — single column, compact spacing and sticky bottom nav */
+@media (max-width: 899px) {
+  :root { --sidebar-w: 240px; }
   .exam-main { grid-template-columns: 1fr; }
   .sidebar-panel { position: static; max-height: none; border-top: 1px solid var(--gray-200); }
   .topbar { padding: 0 14px; gap: 8px; }
   .brand-name { font-size: 13px; }
   .timer-display { font-size: 18px; }
-  .candidate-strip { gap: 14px; flex-wrap: wrap; height: auto; padding: 10px 14px; }
+  .candidate-strip { gap: 10px; flex-wrap: wrap; height: auto; padding: 8px 12px; }
   .candidate-field { border-right: none; margin-right: 0; padding-right: 0; }
-  .question-panel { padding: 16px; }
-  .q-text { font-size: 15px; }
-  .bottom-info span:not(:first-child) { display: none; }
+  .question-panel { padding: 12px; }
+  .q-text { font-size: 15px; line-height: 1.5; }
+  .q-image { max-height: 200px; }
+  .option-item { padding: 10px 12px; gap: 10px; }
+  .opt-text { font-size: 14px; }
+  .q-grid { grid-template-columns: repeat(8, 1fr); }
   .results-grid { grid-template-columns: repeat(2, 1fr); }
-  .q-grid { grid-template-columns: repeat(10, 1fr); }
+  /* keep important actions visible */
+  .bottom-bar { height: 64px; padding: 0 12px; }
+  .btn-nav { padding: 10px 18px; }
 }
 
+/* Very small phones */
 @media (max-width: 480px) {
   .topbar-center { display: none; }
   .btn-end span { display: none; }
+  .brand-name { font-size: 12px; }
+  .timer-display { font-size: 16px; }
+  .q-text { font-size: 14px; }
 }

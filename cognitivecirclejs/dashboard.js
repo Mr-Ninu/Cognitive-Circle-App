@@ -65,6 +65,25 @@ document.addEventListener('DOMContentLoaded', () => {
     buildLineChart(fresh.results);
   }, 30000);
 
+  // ── Listen for new exam results (real-time from other tabs/windows) ──
+  window.addEventListener('resultSubmitted', (e) => {
+    const result = e.detail;
+    if (result) {
+      // Show notification badge
+      const badge = document.querySelector('[data-results-badge]');
+      if (badge) {
+        badge.textContent = '●';
+        badge.style.color = '#10b981';
+        badge.title = 'New result received!';
+      }
+      // Reload data to reflect new result
+      const fresh = loadAllData();
+      updateStatCards(fresh);
+      buildActivityFeed(fresh);
+      buildLineChart(fresh.results);
+    }
+  });
+
 });
 
 /* ═══════════════════════════════════════════════════════════

@@ -26,6 +26,30 @@ document.addEventListener('DOMContentLoaded', () => {
   wireModal();
   wireNotifications();   // notification bell
   loadResults();         // async — populates filters + notifications when done
+
+  // ── Real-time result updates ────────────────────────────
+  window.addEventListener('resultSubmitted', (e) => {
+    const newResult = e.detail;
+    if (newResult) {
+      allResults.push(newResult);
+      localStorage.setItem('cc_results', JSON.stringify(allResults));
+      // Reload view to show new result
+      applyFilters();
+      renderStats();
+      renderScoreDist();
+      renderTopStudents();
+      renderQA();
+      // Show notification in bell
+      refreshNotifications();
+      // Show toast
+      const toast = document.getElementById('toast');
+      if (toast) {
+        toast.textContent = `🎉 New result: ${newResult.examTitle} by ${newResult.candidate?.name || 'Student'}`;
+        toast.className = 'toast show success';
+        setTimeout(() => toast.classList.remove('show'), 4000);
+      }
+    }
+  });
 });
 
 // ── Load data ─────────────────────────────────────────────

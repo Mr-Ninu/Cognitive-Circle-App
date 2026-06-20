@@ -336,10 +336,12 @@ function submitExam() {
     questions:   exam.questions,   // stored so corrections page can display without re-lookup
   };
 
+  let resultIndex = -1;
   try {
     const raw  = localStorage.getItem('cc_results') || '[]';
     const list = JSON.parse(raw) || [];
     list.push(result);
+    resultIndex = list.length - 1;
     localStorage.setItem('cc_results', JSON.stringify(list));
     localStorage.removeItem('cc_session');
   } catch (_) {}
@@ -347,13 +349,24 @@ function submitExam() {
   // ── Also save to Firebase so admins see it on any device ──
   if (window.CCDB) {
     CCDB.saveResult(result).catch(function () {});
+    // Emit event so other pages can listen for result updates
+    window.dispatchEvent(new CustomEvent('resultSubmitted', { detail: result }));
   }
 
   // Mark as submitted so the "unsaved changes" guard doesn't block navigation
   exam.submitted = true;
 
-  // Go straight to the detailed results page (no intermediate score popup)
-  window.location.href = 'results.html';
+  // Show success notification
+  showToast('✓ Exam submitted successfully! Redirecting to results…', 'success');
+
+  // Emit event so dashboard/admin pages can listen for new results
+  window.dispatchEvent(new CustomEvent('resultSubmitted', { detail: result }));
+
+  // Go straight to the detailed results page (with fallback index parameter)
+  setTimeout(() => {
+    const params = resultIndex >= 0 ? `?result=${resultIndex}` : '';
+    window.location.href = 'results.html' + params;
+  }, 800);
 }
 
 // ─── Persist session (autosave) ──────────────────

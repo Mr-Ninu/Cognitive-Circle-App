@@ -39,6 +39,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ── Export CSV ─────────────────────────────────────────
   document.getElementById('exportBtn').addEventListener('click', () => exportCSV(students));
 
+  // ── Real-time result updates ────────────────────────────
+  window.addEventListener('resultSubmitted', async (e) => {
+    const newResult = e.detail;
+    if (newResult) {
+      results.push(newResult);
+      const student = buildStudentMap([newResult]);
+      Object.assign(students, student);
+      // Re-render leaderboard
+      render(students, results);
+      // Show toast notification
+      const toast = document.getElementById('toast');
+      if (toast) {
+        toast.textContent = `🎉 New result from ${newResult.candidate?.name || 'a student'}!`;
+        toast.className = 'toast show success';
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+    }
+  });
+
   // ── Modal close ────────────────────────────────────────
   document.getElementById('modalClose').addEventListener('click', closeModal);
   document.getElementById('studentModal').addEventListener('click', e => {
