@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <img src="../cognitivecircleassets/cognitivecirclelogo.png" alt="Cognitive Circle logo" />
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">THE COGNITIVE CIRCLE</span>
+        <span class="logo-sub">UNIVERSITY CBT WEBSITE</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="notes.html" class="nav-item">
+        <i data-lucide="notebook-pen"></i>
+        <span>Notes</span>
+      </a>
+      <a href="questionbank.html" class="nav-item">
+        <i data-lucide="database"></i>
+        <span>Question Bank</span>
+      </a>
+      <a href="exambuilder.html" class="nav-item">
+        <i data-lucide="pencil-line"></i>
+        <span>Exam Builder</span>
+      </a>
+      <a href="login.html" class="nav-item">
+        <i data-lucide="file-text"></i>
+        <span>Take Exam</span>
+      </a>
+      <a href="examresults.html" class="nav-item">
+        <i data-lucide="bar-chart-2"></i>
+        <span>Results</span>
+      </a>
+      <a href="leaderboard.html" class="nav-item">
+        <i data-lucide="trophy"></i>
+        <span>Leaderboard</span>
+      </a>
+      <a href="classrooms.html" class="nav-item">
+        <i data-lucide="users"></i>
+        <span>Classrooms</span>
+      </a>
+      <a href="ai.html" class="nav-item">
+        <i data-lucide="bot"></i>
+        <span>AI Chat Assistant</span>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="settings.html" class="nav-item">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </a>
+      <a href="help.html" class="nav-item">
+        <i data-lucide="help-circle"></i>
+        <span>Help &amp; Support</span>
+      </a>
+      <a href="../login.html" class="nav-item logout">
+        <i data-lucide="log-out"></i>
+        <span>Logout</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i data-lucide="user"></i>
+      </div>
+      <div class="user-info">
+        <span class="user-name">Administrator</span>
+        <span class="user-role">Cognitive Circle</span>
+        <span class="user-status"><span class="status-dot"></span>Online</span>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="page-title-wrap">
+          <h1 class="page-title">Dashboard</h1>
+          <p class="page-subtitle" id="dashGreeting">Welcome back! 👋</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Search anything..." />
+          <kbd>Ctrl + /</kbd>
+        </div>
+        <button class="icon-btn" aria-label="Refresh data" title="Refresh data" onclick="location.reload()">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+        <button class="icon-btn notif-btn" id="notifBtn" aria-label="Notifications">
+          <i data-lucide="bell"></i>
+          <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+        </button>
+
+        <!-- Notification Panel -->
+        <div class="notif-panel" id="notifPanel">
+          <div class="notif-panel-head">
+            <span class="notif-panel-title">Notifications <span id="notifCountLabel" style="font-size:12px;color:#64748b;font-weight:500"></span></span>
+            <button class="notif-mark-all" id="notifMarkAll">Mark all as read</button>
+          </div>
+          <div class="notif-list" id="notifList"></div>
+          <div class="notif-panel-foot">
+            <button class="notif-view-all" onclick="window.location.href='examresults.html'">View all results →</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- ── STAT CARDS ──────────────────────────────── -->
+      <section class="stat-cards">
+
+        <div class="stat-card" style="--card-delay:0.05s">
+          <div class="stat-icon" style="background:#4285F4">
+            <i data-lucide="book-open"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Subjects</span>
+            <span class="stat-num">0</span>
+            <span class="stat-desc">Active subjects</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--card-delay:0.1s">
+          <div class="stat-icon" style="background:#228B22">
+            <i data-lucide="layers"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Questions</span>
+            <span class="stat-num">0</span>
+            <span class="stat-desc">In question bank</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--card-delay:0.15s">
+          <div class="stat-icon" style="background:#FFFF00">
+            <i data-lucide="clipboard-list"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Exams</span>
+            <span class="stat-num">0</span>
+            <span class="stat-desc">Created exams</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--card-delay:0.2s">
+          <div class="stat-icon" style="background:#8A2BE2">
+            <i data-lucide="users"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Students</span>
+            <span class="stat-num">0</span>
+            <span class="stat-desc">Unique candidates</span>
+          </div>
+        </div>
+
+        <div class="stat-card" style="--card-delay:0.25s">
+          <div class="stat-icon" style="background:#E06EE0">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Exams Taken</span>
+            <span class="stat-num">0</span>
+            <span class="stat-desc">All-time attempts</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── MID ROW: Recent Exams + Recent Activity ── -->
+      <section class="mid-row">
+
+        <!-- Recent Exams Table -->
+        <div class="panel recent-exams-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Recent Exams</h2>
+            <a href="exambuilder.html" class="view-all-btn">+ New Exam</a>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Exam Title</th>
+                  <th>Subject</th>
+                  <th>Questions</th>
+                  <th>Duration</th>
+                  <th>Created</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentExamsBody">
+                <tr><td colspan="6" style="text-align:center;padding:28px;color:#9aa3b8;">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="panel-footer">
+            <a href="exambuilder.html" class="view-all-link">
+              View All Exams <i data-lucide="arrow-right" style="width:14px;height:14px;"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="panel activity-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Recent Activity</h2>
+            <a href="examresults.html" class="view-all-btn">View All</a>
+          </div>
+          <div class="activity-list" id="activityList">
+            <div style="padding:28px;text-align:center;color:#9aa3b8;font-size:13px;">Loading…</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── BOTTOM ROW: Charts + Quick Actions ──────── -->
+      <section class="bottom-row">
+
+        <!-- Donut Chart -->
+        <div class="panel chart-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Questions by Subject</h2>
+            <a href="questionbank.html" class="view-all-btn">View Bank</a>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="donutChart" width="180" height="180"></canvas>
+            <div class="donut-legend" id="donutLegend"></div>
+          </div>
+        </div>
+
+        <!-- Line Chart -->
+        <div class="panel chart-panel chart-panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Exam Activity (Last 8 Weeks)</h2>
+            <a href="examresults.html" class="view-all-btn">View Results</a>
+          </div>
+          <div class="line-legend">
+            <span class="legend-dot" style="background:#4285F4"></span> Exams Taken
+            <span class="legend-dot" style="background:#34A853;margin-left:1rem"></span> Avg Score (%)
+          </div>
+          <div class="line-chart-wrap">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel quick-actions-panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Quick Actions</h2>
+          </div>
+          <div class="quick-grid">
+            <button class="quick-btn quick-btn--blue" onclick="location.href='questionbank.html'">
+              <i data-lucide="plus-circle"></i>
+              <span>Add Question</span>
+            </button>
+            <button class="quick-btn quick-btn--green" onclick="location.href='exambuilder.html'">
+              <i data-lucide="file-plus"></i>
+              <span>Create Exam</span>
+            </button>
+            <button class="quick-btn quick-btn--purple" onclick="location.href='questionbank.html'">
+              <i data-lucide="book-marked"></i>
+              <span>Add Subject</span>
+            </button>
+            <button class="quick-btn quick-btn--orange" onclick="location.href='examresults.html'">
+              <i data-lucide="bar-chart-2"></i>
+              <span>View Results</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div><!-- /page-body -->
+
+    <footer class="main-footer">
+      <span>© 2025 The Cognitive Circle. All rights reserved.</span>
+      <span class="footer-tagline">Practice Beyond Limits.</span>
+    </footer>
+
+  </main>
+  
+<script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/dashboard.js"></script>
+</body>
+</html>

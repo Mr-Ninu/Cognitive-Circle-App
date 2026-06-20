@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaderboard – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/dashboard.css" />
+  <link rel="stylesheet" href="../cognitivecirclecss/leaderboard.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="white" stroke-width="1.5" stroke-opacity="0.4"/>
+          <circle cx="20" cy="20" r="11" stroke="white" stroke-width="1.5" stroke-opacity="0.6"/>
+          <circle cx="20" cy="20" r="4" fill="white"/>
+          <line x1="20" y1="2"  x2="20" y2="9"  stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+          <line x1="20" y1="31" x2="20" y2="38" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+          <line x1="2"  y1="20" x2="9"  y2="20" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+          <line x1="31" y1="20" x2="38" y2="20" stroke="white" stroke-width="1.5" stroke-opacity="0.7"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">THE COGNITIVE CIRCLE</span>
+        <span class="logo-sub">UNIVERSITY CBT WEBSITE</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i><span>Dashboard</span>
+      </a>
+      <a href="notes.html" class="nav-item">
+        <i data-lucide="notebook-pen"></i><span>Notes</span>
+      </a>
+      <a href="questionbank.html" class="nav-item">
+        <i data-lucide="database"></i><span>Question Bank</span>
+      </a>
+      <a href="exambuilder.html" class="nav-item">
+        <i data-lucide="pencil-line"></i><span>Exam Builder</span>
+      </a>
+      <a href="login.html" class="nav-item">
+        <i data-lucide="file-text"></i><span>Take Exam</span>
+      </a>
+      <a href="examresults.htmls" class="nav-item">
+        <i data-lucide="bar-chart-2"></i><span>Results</span>
+      </a>
+      <a href="leaderboard.html" class="nav-item active">
+        <i data-lucide="trophy"></i><span>Leaderboard</span>
+      </a>
+      <a href="classrooms.html" class="nav-item">
+        <i data-lucide="users"></i><span>Classrooms</span>
+      </a>
+      <a href="ai.html" class="nav-item">
+        <i data-lucide="bot"></i><span>AI Chat Assistant</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a href="settings.html" class="nav-item">
+        <i data-lucide="settings"></i><span>Settings</span>
+      </a>
+      <a href="help.html" class="nav-item">
+        <i data-lucide="help-circle"></i><span>Help &amp; Support</span>
+      </a>
+      <a href="../login.html" class="nav-item logout">
+        <i data-lucide="log-out"></i><span>Logout</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar"><i data-lucide="user"></i></div>
+      <div class="user-info">
+        <span class="user-name">Administrator</span>
+        <span class="user-role">Cognitive Circle</span>
+        <span class="user-status"><span class="status-dot"></span>Online</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN
+  ═══════════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="page-title-wrap">
+          <h1 class="page-title">Leaderboard</h1>
+          <p class="page-subtitle">Top performing students across all exams</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input type="text" id="searchInput" placeholder="Search by name or reg number…" />
+        </div>
+        <button class="icon-btn" title="Refresh" onclick="location.reload()">
+          <i data-lucide="refresh-cw"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <!-- ── PODIUM HERO ───────────────────────────── -->
+      <div class="lb-hero" id="podiumSection">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- ── CONTROLS ──────────────────────────────── -->
+      <div class="lb-controls">
+        <div class="lb-controls-left">
+          <span class="lb-total-label" id="totalLabel">— students</span>
+        </div>
+        <div class="lb-controls-right">
+          <label class="lb-filter-label">Filter by exam:</label>
+          <select class="lb-select" id="examFilter">
+            <option value="">All Exams</option>
+          </select>
+          <label class="lb-filter-label">Sort by:</label>
+          <select class="lb-select" id="sortSelect">
+            <option value="avg">Average Score</option>
+            <option value="best">Best Score</option>
+            <option value="taken">Exams Taken</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── FULL TABLE ─────────────────────────────── -->
+      <div class="panel lb-panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><i data-lucide="list-ordered" style="width:16px;height:16px;vertical-align:-2px;margin-right:6px;"></i>Full Rankings</h2>
+          <button class="view-all-btn" id="exportBtn">
+            <i data-lucide="download" style="width:13px;height:13px;vertical-align:-1px;margin-right:4px;"></i>Export CSV
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table lb-table">
+            <thead>
+              <tr>
+                <th style="width:60px">Rank</th>
+                <th>Student Name</th>
+                <th>Reg Number</th>
+                <th>Programme</th>
+                <th>Exams Taken</th>
+                <th>Avg Score</th>
+                <th>Best Score</th>
+                <th>Best Grade</th>
+                <th>Last Exam</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="lbTableBody">
+              <tr><td colspan="10" class="lb-empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── SUBJECT BREAKDOWN ─────────────────────── -->
+      <div class="panel lb-subject-panel" id="subjectPanel" style="display:none">
+        <div class="panel-header">
+          <h2 class="panel-title">Performance by Subject</h2>
+        </div>
+        <div class="lb-subject-grid" id="subjectGrid"></div>
+      </div>
+
+    </div><!-- /page-body -->
+
+    <footer class="main-footer">
+      <span>© 2025 The Cognitive Circle. All rights reserved.</span>
+      <span class="footer-tagline">Practice Beyond Limits.</span>
+    </footer>
+
+  </main>
+
+  <!-- ── STUDENT DETAIL MODAL ────────────────────── -->
+  <div class="lb-modal-overlay" id="studentModal">
+    <div class="lb-modal">
+      <button class="lb-modal-close" id="modalClose"><i data-lucide="x"></i></button>
+      <div class="lb-modal-header" id="modalHeader"></div>
+      <div class="lb-modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/leaderboard.js"></script>
+</body>
+</html>

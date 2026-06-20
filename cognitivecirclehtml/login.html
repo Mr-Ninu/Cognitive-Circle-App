@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Login – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/login.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <div class="page-wrap">
+
+    <!-- ── LOGIN CARD ── -->
+    <div class="login-card" id="loginCard">
+
+      <!-- Logo -->
+      <div class="logo-block">
+          <div class="logo-circle">
+            <img src="../cognitivecircleassets/logo.png" alt="Cognitive Circle logo" />
+          </div>
+        <div class="logo-text">
+          <span class="logo-main">COGNITIVE</span>
+          <span class="logo-sub">CIRCLE</span>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <div class="card-heading">
+        <h1>Student Login</h1>
+        <p>Enter your details to access the exam</p>
+      </div>
+
+      <!-- Exam info banner (populated from localStorage) -->
+      <div class="exam-banner" id="examBanner" style="display:none;">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <div class="exam-banner-text">
+          <span class="exam-banner-title" id="bannerTitle">—</span>
+          <span class="exam-banner-meta" id="bannerMeta">—</span>
+        </div>
+      </div>
+      <div class="exam-banner exam-banner-warn" id="noExamBanner" style="display:none;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="exam-banner-text">
+          <span class="exam-banner-title">No Exam Found</span>
+          <span class="exam-banner-meta">Please ask your instructor to publish an exam first.</span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form id="loginForm" novalidate>
+
+        <div class="form-group">
+          <label for="candidateName">
+            <i class="fa-solid fa-user icon-blue"></i> Full Name
+          </label>
+          <input
+            type="text"
+            id="candidateName"
+            class="form-input"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            spellcheck="false"
+          />
+          <span class="field-error" id="nameError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="regNumber">
+            <i class="fa-solid fa-id-badge icon-blue"></i> Registration Number
+          </label>
+          <input
+            type="text"
+            id="regNumber"
+            class="form-input"
+            placeholder="e.g. STU/2024/001"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <span class="field-error" id="regError"></span>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btnStart">
+          <span id="btnLabel">Proceed to Instructions</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+      </form>
+
+      <!-- Footer note -->
+      <p class="footer-note">
+        <i class="fa-solid fa-lock"></i>
+        Your information is used only for this exam session.
+      </p>
+
+    </div>
+    <!-- end login-card -->
+
+    <!-- Bottom brand line -->
+    <p class="brand-footer">© 2024 The Cognitive Circle. All rights reserved.</p>
+
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cognitive Circle - Learn. Practice. Excel.</title>
+  
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for Beautiful UI Elements -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Tailwind CSS CDN for Sleek Styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              blue: '#2563eb',
+              dark: '#1e293b',
+              navy: '#0f172a',
+              accent: '#3b82f6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Firebase SDK CDNs (Generous Free Tier for Global Syncing) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- HEADER NAVBAR -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 py-4 md:px-8">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2.5 font-bold text-xl text-slate-900 tracking-tight">
+        <div class="w-9 h-9 bg-brand-blue flex items-center justify-center text-white text-base rounded-xl shadow-md shadow-blue-200">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="flex flex-col leading-none">
+          <span class="font-black text-slate-800 tracking-tight">COGNITIVE</span>
+          <span class="text-[10px] tracking-widest text-brand-blue font-extrabold uppercase">CIRCLE</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+        <a href="#home" class="hover:text-brand-blue transition-colors">Home</a>
+        <a href="#features" class="hover:text-brand-blue transition-colors">Features</a>
+        <a href="#database-info" class="hover:text-brand-blue transition-colors">Free Cloud Syncing</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button onclick="scrollToAuthSection('login')" class="text-slate-700 bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition-all border border-slate-250">
+          <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Sign In
+        </button>
+        <button onclick="scrollToAuthSection('signup')" class="bg-brand-blue hover:bg-blue-600 active:scale-95 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition-all shadow-md shadow-blue-100">
+          Get Started
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO & AUTHENTICATION SECTION -->
+  <main id="home" class="relative flex-1 py-12 md:py-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
+    <div class="absolute top-[-50px] right-[-50px] w-[400px] h-[400px] rounded-full bg-blue-100/30 blur-[100px] pointer-events-none -z-10"></div>
+    <div class="absolute bottom-[50px] left-[-50px] w-[350px] h-[350px] rounded-full bg-indigo-100/20 blur-[90px] pointer-events-none -z-10"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-6 space-y-8 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 px-3.5 py-1.5 rounded-full text-xs font-bold text-brand-blue">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          <span>Online Exam Platform Ready</span>
+        </div>
+        <div class="space-y-4">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-800 leading-[1.08] tracking-tight">
+            Challenge Your Knowledge. <span class="text-brand-blue text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Perfect Your Score.</span>
+          </h1>
+          <p class="text-slate-500 text-sm sm:text-base leading-relaxed max-w-lg mx-auto lg:mx-0">
+            Welcome to <strong class="text-slate-700">The Cognitive Circle</strong>. Build, publish, and complete custom exams under timed conditions with real-time feedback and results.
+          </p>
+        </div>
+        <div class="grid grid-cols-3 gap-4 pt-4 max-w-md mx-auto lg:mx-0">
+          <div class="p-4 bg-white/60 backdrop-blur border border-slate-100 rounded-2xl">
+            <div id="heroSubjCount" class="text-xl sm:text-2xl font-black text-brand-blue">0</div>
+            <div class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Subjects</div>
+          </div>
+          <div class="p-4 bg-white/60 backdrop-blur border border-slate-100 rounded-2xl">
+            <div id="heroQuestCount" class="text-xl sm:text-2xl font-black text-slate-800">0</div>
+            <div class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Questions</div>
+          </div>
+          <div class="p-4 bg-white/60 backdrop-blur border border-slate-100 rounded-2xl">
+            <div id="heroExamsCount" class="text-xl sm:text-2xl font-black text-brand-blue">0</div>
+            <div class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Mock Tests</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auth Card -->
+      <div id="auth-section" class="lg:col-span-6 max-w-lg w-full justify-self-center lg:justify-self-end">
+        <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-slate-200">
+          <div class="flex bg-slate-100 p-1 rounded-2xl mb-8">
+            <button id="tabBtnLogin" onclick="setAuthTab('login')" class="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all focus:outline-none bg-white text-slate-800 shadow">
+              <i class="fa-solid fa-lock mr-2 text-blue-500"></i>Sign In
+            </button>
+            <button id="tabBtnSignup" onclick="setAuthTab('signup')" class="flex-1 text-center py-2.5 rounded-xl font-bold text-sm transition-all focus:outline-none text-slate-500 hover:text-slate-800">
+              <i class="fa-solid fa-id-card mr-2 text-slate-400"></i>Register
+            </button>
+          </div>
+          <div class="space-y-2 mb-6">
+            <h2 id="authCardTitle" class="text-xl sm:text-2xl font-black text-slate-800">Welcome Back</h2>
+            <p id="authCardSub" class="text-xs text-slate-400 font-medium">Log into the Cognitive Circle administrator center.</p>
+          </div>
+          <div id="authNotify" class="hidden p-4 rounded-2xl border text-xs leading-relaxed mb-5"></div>
+          <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <div class="form-group space-y-2">
+              <label class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Login Portal Destination</label>
+              <div class="grid grid-cols-2 gap-2">
+                <label id="roleStudentOption" class="border-2 border-slate-100 hover:border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer transition-all">
+                  <input type="radio" name="authRole" value="student" checked onchange="toggleRoleUI('student')" class="accent-blue-600">
+                  <span class="text-xs font-bold text-slate-650">Student Portal</span>
+                </label>
+                <label id="roleAdminOption" class="border-2 border-slate-100 hover:border-slate-200 rounded-xl p-3 flex items-center gap-2 cursor-pointer transition-all">
+                  <input type="radio" name="authRole" value="admin" onchange="toggleRoleUI('admin')" class="accent-blue-600">
+                  <span class="text-xs font-bold text-slate-650">Admin Center</span>
+                </label>
+              </div>
+            </div>
+            <div id="fieldFullName" class="hidden space-y-1.5">
+              <label for="regName" class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Full Name</label>
+              <div class="relative">
+                <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="regName" placeholder="Enter full name" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-blue focus:bg-white rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none transition-all">
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label for="authEmail" class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Email Address</label>
+              <div class="relative">
+                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="email" id="authEmail" placeholder="you@university.edu" required class="w-full bg-slate-50 border border-slate-200 focus:border-brand-blue focus:bg-white rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none transition-all">
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <label for="authPassword" class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Secure Password</label>
+                <a id="btnForgot" href="#" class="text-[11px] text-brand-blue font-bold hover:underline">Forgot password?</a>
+              </div>
+              <div class="relative">
+                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="password" id="authPassword" placeholder="••••••••" required class="w-full bg-slate-50 border border-slate-200 focus:border-brand-blue focus:bg-white rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none transition-all">
+              </div>
+            </div>
+            <div id="studentExtraFields" class="hidden grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="regCode" class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Registration Key</label>
+                <input type="text" id="regCode" placeholder="COB/2026/092" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-blue focus:bg-white rounded-xl py-3 px-4 text-sm focus:outline-none transition-all">
+              </div>
+              <div class="space-y-1.5">
+                <label for="regProgram" class="text-[11px] font-extrabold uppercase text-slate-400 tracking-wider block">Department</label>
+                <input type="text" id="regProgram" placeholder="Computer Science" class="w-full bg-slate-50 border border-slate-200 focus:border-brand-blue focus:bg-white rounded-xl py-3 px-4 text-sm focus:outline-none transition-all">
+              </div>
+            </div>
+            <button type="submit" id="btnSubmit" class="w-full text-center py-3.5 bg-brand-blue hover:bg-blue-600 font-bold text-white rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+              <span id="btnSubmitText">Log Into Sandbox</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- DATABASE INTRO -->
+  <section id="database-info" class="bg-indigo-950 text-white py-16 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 space-y-10">
+      <div class="max-w-3xl space-y-3">
+        <span class="text-xs uppercase tracking-widest font-extrabold text-blue-400 block tracking-[0.2em]">No Isolated Data Blocks</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold">Online Multi-Device Synchronization</h2>
+        <p class="text-indigo-200 text-sm leading-relaxed">
+          Because standard localStorage is browser-bound, we added a complete, serverless, free global Firestore syncing option to allow multi-device exam submissions online, for free!
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-[#111c44]/50 border border-indigo-900 rounded-3xl p-6 space-y-4">
+          <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center text-lg"><i class="fa-solid fa-database"></i></div>
+          <h3 class="text-lg font-bold">1. Free Google Firestore</h3>
+          <p class="text-indigo-200 text-xs sm:text-sm leading-relaxed font-normal">Stores questions, exams, and results safely online using Google's 100% free Spark tier database.</p>
+        </div>
+        <div class="bg-[#111c44]/50 border border-indigo-900 rounded-3xl p-6 space-y-4">
+          <div class="w-12 h-12 bg-green-500/10 text-green-400 rounded-2xl flex items-center justify-center text-lg"><i class="fa-solid fa-user-lock"></i></div>
+          <h3 class="text-lg font-bold">2. Firebase Authentication</h3>
+          <p class="text-indigo-200 text-xs sm:text-sm leading-relaxed font-normal">Allows students to create logins, sign up, and access CBT session codes on separate screens.</p>
+        </div>
+        <div class="bg-[#111c44]/50 border border-indigo-900 rounded-3xl p-6 space-y-4">
+          <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center text-lg"><i class="fa-solid fa-toggle-on"></i></div>
+          <h3 class="text-lg font-bold">3. Dual-Mode Logic</h3>
+          <p class="text-indigo-200 text-xs sm:text-sm leading-relaxed font-normal">Runs cleanly on standard LocalStorage immediately in VS Code, and goes live when you paste Firebase credentials.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-16 md:py-24 px-4 md:px-8 max-w-7xl mx-auto w-full">
+    <div class="text-center max-w-2xl mx-auto space-y-3 mb-16">
+      <span class="text-xs uppercase tracking-widest font-extrabold text-brand-blue block tracking-[0.2em]">Syllabus Excellence</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800">Your Complete University CBT Suite</h2>
+      <p class="text-slate-500 text-sm">Full-scale academic tools engineered for flawless testing, grading and question bank management.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-3xl border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:shadow-slate-100 group">
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-brand-blue flex items-center justify-center font-bold text-lg mb-4"><i class="fa-solid fa-database"></i></div>
+        <h3 class="font-bold text-slate-800 text-base">Interactive Question Bank</h3>
+        <p class="text-[#64748b] text-xs sm:text-sm mt-2 leading-relaxed">Add, modify, or format MCQ, True/False, and essay assessments. Integrates custom math formulas easily.</p>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:shadow-slate-100 group">
+        <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-lg mb-4"><i class="fa-solid fa-sliders"></i></div>
+        <h3 class="font-bold text-slate-800 text-base">Custom Exam Builder</h3>
+        <p class="text-[#64748b] text-xs sm:text-sm mt-2 leading-relaxed">Generate mock reviews using questions. Set ticking countdown limits, question targets, and publish results.</p>
+      </div>
+      <div class="bg-white p-6 rounded-3xl border border-slate-100 hover:border-blue-200 transition-all hover:shadow-xl hover:shadow-slate-100 group">
+        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg mb-4"><i class="fa-solid fa-square-poll-vertical"></i></div>
+        <h3 class="font-bold text-slate-800 text-base">Recent Scores Analytics</h3>
+        <p class="text-[#64748b] text-xs sm:text-sm mt-2 leading-relaxed">Admin dashboards update automatically with custom donuts and performance scales as items are completed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-450 pt-12 pb-8 border-t border-slate-800 text-xs text-slate-400 w-full px-4 md:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span>&copy; 2026 The Cognitive Circle. All rights reserved.</span>
+      <div class="flex gap-4">
+        <a href="#home" class="hover:text-white transition-colors">Home</a>
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#database-info" class="hover:text-white transition-colors">Cloud setup</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="cognitivecirclejs/firebase-db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

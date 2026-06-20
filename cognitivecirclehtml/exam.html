@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="../cognitivecirclejs/mathrender.js"></script>
+<script defer src="https://unpkg.com/mathlive"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/exam.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       TOP NAVIGATION BAR
+  ══════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand-logo">
+        <div class="brand-icon">
+          <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="18" fill="#2563eb"/>
+            <path d="M10 18 Q18 8 26 18 Q18 28 10 18Z" fill="white" opacity="0.92"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name" id="brandName">The Cognitive Circle</span>
+          <span class="brand-subject" id="brandSubject">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="timer-block" id="timerBlock">
+        <i class="fa-regular fa-clock timer-icon"></i>
+        <div>
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+          <div class="timer-label">Time Left</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="calc-wrapper">
+        <button class="btn-calc" id="calcToggle" onclick="toggleCalc()">
+          <i class="fa-solid fa-calculator"></i> Calculator
+          <i class="fa-solid fa-chevron-down calc-chevron" id="calcChevron"></i>
+        </button>
+        <!-- Calculator Popup -->
+        <div class="calc-popup" id="calcPopup" style="display:none;">
+          <div class="calc-screen" id="calcScreen">0</div>
+          <div class="calc-keys">
+            <button class="ck fn" onclick="calcClear()">C</button>
+            <button class="ck fn" onclick="calcBackspace()">⌫</button>
+            <button class="ck fn" onclick="calcInput('%')">%</button>
+            <button class="ck op" onclick="calcInput('/')">÷</button>
+
+            <button class="ck" onclick="calcInput('7')">7</button>
+            <button class="ck" onclick="calcInput('8')">8</button>
+            <button class="ck" onclick="calcInput('9')">9</button>
+            <button class="ck op" onclick="calcInput('*')">×</button>
+
+            <button class="ck" onclick="calcInput('4')">4</button>
+            <button class="ck" onclick="calcInput('5')">5</button>
+            <button class="ck" onclick="calcInput('6')">6</button>
+            <button class="ck op" onclick="calcInput('-')">−</button>
+
+            <button class="ck" onclick="calcInput('1')">1</button>
+            <button class="ck" onclick="calcInput('2')">2</button>
+            <button class="ck" onclick="calcInput('3')">3</button>
+            <button class="ck op" onclick="calcInput('+')">+</button>
+
+            <button class="ck zero" onclick="calcInput('0')">0</button>
+            <button class="ck" onclick="calcInput('.')">.</button>
+            <button class="ck eq" onclick="calcEquals()">=</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-end" onclick="confirmEndExam()">
+        <i class="fa-solid fa-power-off"></i> End Exam
+      </button>
+    </div>
+  </header>
+
+  <!-- Candidate Info Strip -->
+  <div class="candidate-strip">
+    <div class="candidate-field">
+      <i class="fa-regular fa-user"></i>
+      <div>
+        <span class="cf-label">Candidate Name:</span>
+        <span class="cf-value" id="infoName">—</span>
+      </div>
+    </div>
+    <div class="candidate-field">
+      <i class="fa-regular fa-id-badge"></i>
+      <div>
+        <span class="cf-label">Registration No:</span>
+        <span class="cf-value" id="infoReg">—</span>
+      </div>
+    </div>
+    <div class="candidate-field">
+      <i class="fa-regular fa-file-lines"></i>
+      <div>
+        <span class="cf-label">Exam:</span>
+        <span class="cf-value" id="infoExam">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════ -->
+  <main class="exam-main">
+
+    <!-- LEFT: Question Panel -->
+    <section class="question-panel">
+
+      <!-- Question Header -->
+      <div class="q-header">
+        <div class="q-number">
+          Question <span id="qCurrentNum" class="q-num-highlight">1</span> of <span id="qTotal">0</span>
+        </div>
+        <button class="btn-flag" id="flagBtn" onclick="toggleFlag()">
+          <i class="fa-solid fa-flag" id="flagIcon"></i> Flag
+        </button>
+      </div>
+
+      <!-- Question Text -->
+      <div class="q-body">
+        <p class="q-text" id="qText">Loading question…</p>
+
+        <!-- Image (shown only if question has image) -->
+        <div class="q-image-wrap" id="qImageWrap" style="display:none;">
+          <img id="qImage" src="" alt="Question image" class="q-image" />
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="options-list" id="optionsList">
+        <!-- Options rendered by JS -->
+      </div>
+
+      <!-- Navigation -->
+      <div class="q-nav">
+        <button class="btn-nav btn-prev" id="btnPrev" onclick="prevQuestion()">
+          <i class="fa-solid fa-arrow-left"></i> Previous
+        </button>
+        <button class="btn-nav btn-next" id="btnNext" onclick="nextQuestion()">
+          Next <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: Sidebar Panel -->
+    <aside class="sidebar-panel">
+
+      <!-- Question Grid -->
+      <div class="panel-card">
+        <div class="panel-title">Questions</div>
+
+        <!-- Legend -->
+        <div class="grid-legend">
+          <span class="legend-item"><span class="ld ld-answered"></span> Answered</span>
+          <span class="legend-item"><span class="ld ld-current"></span> Current</span>
+          <span class="legend-item"><span class="ld ld-unanswered"></span> Not Answered</span>
+          <span class="legend-item"><span class="ld ld-flagged"></span> Flagged</span>
+        </div>
+
+        <!-- Grid -->
+        <div class="q-grid" id="qGrid"></div>
+      </div>
+
+      <!-- Exam Overview -->
+      <div class="panel-card mt-12">
+        <div class="panel-title">Exam Overview</div>
+        <ul class="overview-list">
+          <li class="ov-item">
+            <div class="ov-left">
+              <i class="fa-regular fa-rectangle-list ov-icon"></i>
+              <span>Total Questions</span>
+            </div>
+            <span class="ov-val" id="ovTotal">0</span>
+          </li>
+          <li class="ov-item">
+            <div class="ov-left">
+              <i class="fa-solid fa-circle-check ov-icon ov-green"></i>
+              <span>Answered</span>
+            </div>
+            <span class="ov-val ov-green" id="ovAnswered">0</span>
+          </li>
+          <li class="ov-item">
+            <div class="ov-left">
+              <i class="fa-regular fa-circle ov-icon"></i>
+              <span>Not Answered</span>
+            </div>
+            <span class="ov-val ov-bold" id="ovNot">0</span>
+          </li>
+          <li class="ov-item">
+            <div class="ov-left">
+              <i class="fa-solid fa-flag ov-icon ov-orange"></i>
+              <span>Flagged</span>
+            </div>
+            <span class="ov-val ov-orange" id="ovFlagged">0</span>
+          </li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       BOTTOM STICKY BAR
+  ══════════════════════════════════════════ -->
+  <footer class="bottom-bar">
+    <div class="bottom-info">
+      <span><strong>Candidate:</strong> <span id="footerName">—</span></span>
+      <span><strong>Reg No:</strong> <span id="footerReg">—</span></span>
+      <span><strong>Exam:</strong> <span id="footerExam">—</span></span>
+    </div>
+    <button class="btn-review" onclick="reviewFlagged()">
+      <i class="fa-solid fa-bookmark"></i>
+      Review Later (<span id="reviewCount">0</span>)
+    </button>
+  </footer>
+
+  <!-- ══════════════════════════════════════════
+       END EXAM CONFIRMATION MODAL
+  ══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="endModal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-icon warning">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h2>Submit Exam?</h2>
+      <p>Are you sure you want to end and submit this exam? This action cannot be undone.</p>
+
+      <div class="modal-stats">
+        <div class="ms-item">
+          <span class="ms-val" id="msAnswered">0</span>
+          <span class="ms-lbl">Answered</span>
+        </div>
+        <div class="ms-item">
+          <span class="ms-val warn" id="msUnanswered">0</span>
+          <span class="ms-lbl">Unanswered</span>
+        </div>
+        <div class="ms-item">
+          <span class="ms-val orange" id="msFlagged">0</span>
+          <span class="ms-lbl">Flagged</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal('endModal')">Cancel</button>
+        <button class="btn-modal-submit" onclick="submitExam()">
+          <i class="fa-solid fa-paper-plane"></i> Submit Exam
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/exam.js"></script>
+</body>
+</html>

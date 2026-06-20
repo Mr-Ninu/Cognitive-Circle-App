@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- KaTeX — LaTeX math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="../cognitivecirclejs/mathrender.js"></script>
+<script defer src="https://unpkg.com/mathlive"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Results – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/results.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">
+        <img src="../cognitivecircleassets/logo.png" alt="Cognitive Circle logo" />
+      </div>
+      <div class="brand-text">
+        <span class="brand-main">COGNITIVE</span>
+        <span class="brand-sub">CIRCLE</span>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Print
+      </button>
+      <a class="btn btn-primary" href="login.html">
+        <i class="fa-solid fa-rotate-right"></i> Take Another Exam
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-wrap" id="pageWrap">
+
+    <!-- GREETING HERO -->
+    <section class="hero-card" id="heroCard">
+      <div class="hero-left">
+        <p class="hero-label">EXAM RESULTS</p>
+        <h1 class="hero-greeting" id="heroGreeting">Loading…</h1>
+        <p class="hero-exam-name" id="heroExamName"></p>
+        <div class="hero-meta-row">
+          <span class="hero-meta-item"><i class="fa-solid fa-calendar-days"></i> <span id="heroDate">—</span></span>
+          <span class="hero-meta-item"><i class="fa-solid fa-clock"></i> <span id="heroTime">—</span></span>
+          <span class="hero-meta-item"><i class="fa-solid fa-id-card"></i> <span id="heroReg">—</span></span>
+        </div>
+        <div class="remark-pill" id="remarkPill"></div>
+      </div>
+      <div class="hero-right">
+        <div class="score-ring-wrap">
+          <svg class="score-ring" viewBox="0 0 160 160">
+            <circle class="ring-bg"    cx="80" cy="80" r="68" />
+            <circle class="ring-fill"  cx="80" cy="80" r="68" id="ringFill" />
+          </svg>
+          <div class="score-inner">
+            <div class="score-pct" id="scorePct">0%</div>
+            <div class="score-label">Score</div>
+          </div>
+        </div>
+        <div class="grade-badge" id="gradeBadge">—</div>
+      </div>
+    </section>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+          <div class="stat-val" id="statCorrect">—</div>
+          <div class="stat-lbl">Correct</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div>
+          <div class="stat-val" id="statWrong">—</div>
+          <div class="stat-lbl">Wrong</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon gray"><i class="fa-solid fa-minus-circle"></i></div>
+        <div>
+          <div class="stat-val" id="statSkipped">—</div>
+          <div class="stat-lbl">Skipped</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-star-half-stroke"></i></div>
+        <div>
+          <div class="stat-val" id="statMarks">—</div>
+          <div class="stat-lbl">Marks Earned</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa-solid fa-list-ol"></i></div>
+        <div>
+          <div class="stat-val" id="statTotal">—</div>
+          <div class="stat-lbl">Total Questions</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORRECTIONS SECTION -->
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title"><i class="fa-solid fa-book-open-reader"></i> Question Review</h2>
+          <p class="section-sub">Review each question, your answer, and the correct answer below.</p>
+        </div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab active" data-filter="all"   onclick="setFilter('all')">All</button>
+          <button class="tab"        data-filter="correct"  onclick="setFilter('correct')">
+            <span class="dot green"></span> Correct
+          </button>
+          <button class="tab"        data-filter="wrong"  onclick="setFilter('wrong')">
+            <span class="dot red"></span> Wrong
+          </button>
+          <button class="tab"        data-filter="skipped" onclick="setFilter('skipped')">
+            <span class="dot gray"></span> Skipped
+          </button>
+        </div>
+      </div>
+
+      <div class="corrections-list" id="correctionsList">
+        <!-- Injected by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== NO RESULTS STATE ===== -->
+  <div class="no-results" id="noResults" style="display:none;">
+    <div class="no-results-inner">
+      <div class="no-results-icon"><i class="fa-solid fa-file-circle-question"></i></div>
+      <h2>No Results Found</h2>
+      <p>It looks like no exam result is available. Please complete an exam first.</p>
+      <a class="btn btn-primary" href="login.html">Go to Login</a>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/results.js"></script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- KaTeX — LaTeX math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="../cognitivecirclejs/mathrender.js"></script>
+<script defer src="https://unpkg.com/mathlive"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Question Bank – Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/questionbank.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+     <div class="logo-icon">
+        <img src="../cognitivecircleassets/cognitivecirclelogo.png" alt="Cognitive Circle logo" />
+      </div>
+    <span>Cognitive Circle</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+    <a href="questionbank.html" class="nav-item active"><i class="fas fa-database"></i><span>Question Bank</span></a>
+    <a href="notes.html" class="nav-item"><i class="fas fa-book-open"></i><span>Notes</span></a>
+    <a href="login.html" class="nav-item"><i class="fas fa-clipboard-list"></i><span>Practice Tests</span></a>
+    <a href="exambuilder.html" class="nav-item"><i class="fas fa-file-alt"></i><span>Exams</span></a>
+    <a href="examresults.html" class="nav-item"><i class="fas fa-chart-bar"></i><span>Results</span></a>
+    <a href="leaderboard.html" class="nav-item"><i class="fas fa-trophy"></i><span>Leaderboard</span></a>
+    <a href="#" class="nav-item"><i class="fas fa-users"></i><span>Classrooms</span></a>
+    <a href="#" class="nav-item"><i class="fas fa-robot"></i><span>AI Assistant</span></a>
+    <a href="#" class="nav-item"><i class="fas fa-cog"></i><span>Settings</span></a>
+  </nav>
+  <a href="#" class="nav-item logout"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+  <header class="page-header">
+    <div>
+      <h1>Question Bank</h1>
+      <p>Manage questions by subject and topic</p>
+    </div>
+    <div class="header-right">
+      <div class="notif-bell"><i class="fas fa-bell"></i><span class="badge" id="notifBadge">0</span></div>
+      <div class="admin-avatar">CC</div>
+      <div>
+        <strong>Admin</strong>
+        <small>Administrator</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- STAT CARDS -->
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="fas fa-copy"></i></div>
+      <div>
+        <div class="stat-value" id="statTotal">0</div>
+        <div class="stat-label">Total Questions</div>
+        <small>All time</small>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+      <div>
+        <div class="stat-value" id="statActive">0</div>
+        <div class="stat-label">Active Questions</div>
+        <small id="statActivePct">0%</small>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon yellow"><i class="fas fa-file"></i></div>
+      <div>
+        <div class="stat-value" id="statDraft">0</div>
+        <div class="stat-label">Draft Questions</div>
+        <small id="statDraftPct">0%</small>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="fas fa-book"></i></div>
+      <div>
+        <div class="stat-value" id="statSubjects">0</div>
+        <div class="stat-label">Subjects</div>
+        <small>All subjects</small>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon teal"><i class="fas fa-tag"></i></div>
+      <div>
+        <div class="stat-value" id="statTopics">0</div>
+        <div class="stat-label">Topics</div>
+        <small>All topics</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="left-col">
+
+      <!-- ADD QUESTION FORM -->
+      <section class="card">
+        <h2>Add New Question</h2>
+        <div class="form-row three-col">
+          <select id="selectSubject">
+            <option value="">Select Subject</option>
+          </select>
+          <select id="selectTopic">
+            <option value="">Select Topic</option>
+          </select>
+          <select id="selectType">
+            <option value="">Select Type</option>
+            <option value="MCQ">MCQ</option>
+            <option value="True/False">True/False</option>
+            <option value="Short Answer">Short Answer</option>
+            <option value="Essay">Essay</option>
+          </select>
+          <button class="btn-primary" id="btnAddQuestion"><i class="fas fa-plus"></i> Add Question</button>
+          <button class="btn-outline" id="btnImport"><i class="fas fa-upload"></i> Import</button>
+        </div>
+
+        <div id="mathToolbar"></div>
+        <textarea id="questionText" placeholder="Enter your question here..." rows="3"></textarea>
+
+        <div id="optionsSection">
+          <div class="options-grid">
+            <div class="option-input"><span class="opt-label">A</span><input type="text" id="optA" placeholder="Option A"/></div>
+            <div class="option-input"><span class="opt-label">B</span><input type="text" id="optB" placeholder="Option B"/></div>
+            <div class="option-input"><span class="opt-label">C</span><input type="text" id="optC" placeholder="Option C"/></div>
+            <div class="option-input"><span class="opt-label">D</span><input type="text" id="optD" placeholder="Option D"/></div>
+          </div>
+        </div>
+
+        <textarea id="explanationText" placeholder="Explanation (optional) — explain why the correct answer is right..." rows="2"></textarea>
+
+        <div class="form-row bottom-row">
+          <div class="form-group">
+            <label>Correct Answer:</label>
+            <select id="correctAnswer">
+              <option value="">Select correct answer</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Difficulty:</label>
+            <select id="difficulty">
+              <option value="">Select difficulty</option>
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+          <label class="checkbox-label">
+            <input type="checkbox" id="markDraft"/> Mark as draft
+          </label>
+          <div class="image-upload-wrap">
+            <label class="btn-outline" for="questionImage"><i class="fas fa-image"></i> Attach Image</label>
+            <input type="file" id="questionImage" accept="image/*" style="display:none"/>
+            <span id="imageName" class="image-name"></span>
+          </div>
+          <button class="btn-primary" id="btnSaveQuestion">Save Question</button>
+        </div>
+        <div id="imagePreviewWrap" style="display:none;margin-top:8px;">
+          <img id="imagePreview" src="" alt="Preview" style="max-height:100px;border-radius:6px;border:1px solid #e2e8f0;"/>
+          <button class="btn-danger-sm" id="btnRemoveImage" style="margin-left:8px;">Remove</button>
+        </div>
+        <div id="formMsg" class="form-msg"></div>
+      </section>
+
+      <!-- QUESTIONS TABLE -->
+      <section class="card">
+        <div class="table-header">
+          <h2>Questions</h2>
+          <div class="filters">
+            <select id="filterSubject"><option value="">All Subjects</option></select>
+            <select id="filterTopic"><option value="">All Topics</option></select>
+            <select id="filterType">
+              <option value="">All Types</option>
+              <option>MCQ</option><option>True/False</option>
+              <option>Short Answer</option><option>Essay</option>
+            </select>
+            <select id="filterDifficulty">
+              <option value="">All Difficulty</option>
+              <option>Easy</option><option>Medium</option><option>Hard</option>
+            </select>
+            <button class="btn-filter"><i class="fas fa-filter"></i> Filter</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="questionsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Subject</th>
+                <th>Topic</th>
+                <th>Type</th>
+                <th>Difficulty</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="questionsBody">
+              <tr id="emptyRow"><td colspan="8" class="empty-msg">No questions yet. Add your first one above!</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+
+      <!-- DONUT CHART -->
+      <div class="card">
+        <h2>Question Breakdown</h2>
+        <div class="donut-wrap">
+          <canvas id="donutChart" width="180" height="180"></canvas>
+          <div class="donut-center" id="donutCenter">0</div>
+        </div>
+        <ul class="legend" id="legend">
+          <li><span class="dot" style="background:#3b82f6"></span>MCQ (<span id="lgMCQ">0</span>)</li>
+          <li><span class="dot" style="background:#22c55e"></span>True/False (<span id="lgTF">0</span>)</li>
+          <li><span class="dot" style="background:#f59e0b"></span>Short Answer (<span id="lgSA">0</span>)</li>
+          <li><span class="dot" style="background:#a855f7"></span>Essay (<span id="lgEssay">0</span>)</li>
+        </ul>
+      </div>
+
+      <!-- SUBJECTS OVERVIEW -->
+      <div class="card">
+        <h2>Subjects Overview</h2>
+        <ul class="subjects-list" id="subjectsList">
+          <li class="empty-msg">No subjects yet.</li>
+        </ul>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="card">
+        <h2>Quick Actions</h2>
+        <button class="quick-action" id="qaBulkImport"><i class="fas fa-file-import"></i> Bulk Import Questions</button>
+        <button class="quick-action" id="qaExport"><i class="fas fa-download"></i> Export Questions</button>
+        <button class="quick-action" id="qaTemplate"><i class="fas fa-download"></i> Download Template</button>
+        <button class="quick-action danger" id="qaDeleted"><i class="fas fa-trash"></i> View Deleted Questions</button>
+      </div>
+
+    </aside>
+  </div>
+</main>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Question</h3>
+      <button class="modal-close" id="closeEditModal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row three-col">
+        <select id="editSubject"><option value="">Select Subject</option></select>
+        <select id="editTopic"><option value="">Select Topic</option></select>
+        <select id="editType">
+          <option value="">Select Type</option>
+          <option value="MCQ">MCQ</option>
+          <option value="True/False">True/False</option>
+          <option value="Short Answer">Short Answer</option>
+          <option value="Essay">Essay</option>
+        </select>
+      </div>
+      <div id="mathToolbarEdit"></div>
+      <textarea id="editQuestionText" placeholder="Enter your question here..." rows="3"></textarea>
+      <div id="editOptionsSection">
+        <div class="options-grid">
+          <div class="option-input"><span class="opt-label">A</span><input type="text" id="editOptA" placeholder="Option A"/></div>
+          <div class="option-input"><span class="opt-label">B</span><input type="text" id="editOptB" placeholder="Option B"/></div>
+          <div class="option-input"><span class="opt-label">C</span><input type="text" id="editOptC" placeholder="Option C"/></div>
+          <div class="option-input"><span class="opt-label">D</span><input type="text" id="editOptD" placeholder="Option D"/></div>
+        </div>
+      </div>
+      <textarea id="editExplanationText" placeholder="Explanation (optional) — explain why the correct answer is right..." rows="2"></textarea>
+      <div class="form-row bottom-row">
+        <div class="form-group">
+          <label>Correct Answer:</label>
+          <select id="editCorrectAnswer">
+            <option value="">Select correct answer</option>
+            <option>A</option><option>B</option><option>C</option><option>D</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Difficulty:</label>
+          <select id="editDifficulty">
+            <option value="">Select difficulty</option>
+            <option>Easy</option><option>Medium</option><option>Hard</option>
+          </select>
+        </div>
+        <label class="checkbox-label">
+          <input type="checkbox" id="editMarkDraft"/> Mark as draft
+        </label>
+      </div>
+      <div class="image-upload-wrap" style="margin-top:8px;">
+        <label class="btn-outline" for="editQuestionImage"><i class="fas fa-image"></i> Attach Image</label>
+        <input type="file" id="editQuestionImage" accept="image/*" style="display:none"/>
+        <span id="editImageName" class="image-name"></span>
+      </div>
+      <div id="editImagePreviewWrap" style="display:none;margin-top:8px;">
+        <img id="editImagePreview" src="" alt="Preview" style="max-height:100px;border-radius:6px;border:1px solid #e2e8f0;"/>
+        <button class="btn-danger-sm" id="editBtnRemoveImage" style="margin-left:8px;">Remove</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelEditModal">Cancel</button>
+      <button class="btn-primary" id="btnSaveEdit">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE SUBJECTS/TOPICS MODAL -->
+<div class="modal-overlay" id="manageModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Manage Subjects & Topics</h3>
+      <button class="modal-close" id="closeManageModal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="manage-grid">
+        <div>
+          <h4>Subjects</h4>
+          <div class="add-row">
+            <input type="text" id="newSubjectInput" placeholder="New subject name..."/>
+            <button class="btn-primary" id="btnAddSubject">Add</button>
+          </div>
+          <ul id="subjectManageList" class="manage-list"></ul>
+        </div>
+        <div>
+          <h4>Topics</h4>
+          <div class="add-row stack">
+            <select id="topicSubjectSelect"><option value="">Pick subject</option></select>
+            <div class="add-row-inline">
+              <input type="text" id="newTopicInput" placeholder="New topic name..." autocomplete="off"/>
+              <button class="btn-primary" id="btnAddTopic">Add</button>
+            </div>
+          </div>
+          <ul id="topicManageList" class="manage-list grouped"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="closeManageBtn">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3>Delete Question</h3>
+      <button class="modal-close" id="closeDeleteModal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete this question? It will be moved to deleted questions.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" id="cancelDeleteModal">Cancel</button>
+      <button class="btn-danger" id="btnConfirmDelete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETED QUESTIONS MODAL -->
+<div class="modal-overlay" id="deletedModal">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <h3>Deleted Questions</h3>
+      <button class="modal-close" id="closeDeletedModal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <table id="deletedTable">
+        <thead><tr><th>#</th><th>Question</th><th>Subject</th><th>Type</th><th>Actions</th></tr></thead>
+        <tbody id="deletedBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="../cognitivecirclejs/firebase-db.js"></script>
+<script src="../cognitivecirclejs/questionbank.js"></script>
+<script src="../cognitivecirclejs/mathtoolbar.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    initMathToolbar('mathToolbar', [
+      'questionText', 'optA', 'optB', 'optC', 'optD', 'explanationText'
+    ]);
+    initMathToolbar('mathToolbarEdit', [
+      'editQuestionText', 'editOptA', 'editOptB', 'editOptC', 'editOptD', 'editExplanationText'
+    ]);
+  });
+</script>
+</body>
+</html>

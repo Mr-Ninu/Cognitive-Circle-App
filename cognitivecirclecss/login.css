@@ -1,0 +1,290 @@
+/* =============================================
+   COGNITIVE CIRCLE – Student Login Styles
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #eff6ff;
+  --primary-100: #dbeafe;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --green: #10b981;
+  --shadow: 0 8px 32px rgba(37,99,235,.12), 0 2px 8px rgba(0,0,0,.06);
+  --shadow-lg: 0 20px 60px rgba(37,99,235,.15), 0 4px 16px rgba(0,0,0,.08);
+  --radius: 16px;
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --transition: 0.2s ease;
+}
+
+html { font-size: 15px; }
+
+body {
+  font-family: var(--font);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #f0f4ff 0%, #e8f0fe 50%, #f5f8ff 100%);
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ── Background decorative blobs ── */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .35;
+  pointer-events: none;
+  z-index: 0;
+}
+.blob-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, #93c5fd, #2563eb);
+  top: -150px; left: -150px;
+}
+.blob-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #c7d2fe, #4f46e5);
+  bottom: -100px; right: -100px;
+}
+
+/* ── Page wrap ── */
+.page-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 460px;
+  gap: 16px;
+}
+
+/* ── Login Card ── */
+.login-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 40px 40px 32px;
+  width: 100%;
+  border: 1px solid rgba(37,99,235,.08);
+  animation: slideUp .4s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Logo ── */
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.logo-circle {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(37,99,235,.2);
+  overflow: hidden;
+}
+.logo-circle img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.logo-main {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--primary);
+}
+.logo-sub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--gray-400);
+}
+
+/* ── Card heading ── */
+.card-heading {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.card-heading h1 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 6px;
+}
+.card-heading p {
+  font-size: 13.5px;
+  color: var(--gray-400);
+}
+
+/* ── Exam banner ── */
+.exam-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--primary-light);
+  border: 1.5px solid var(--primary-100);
+  border-radius: 11px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  font-size: 13px;
+}
+.exam-banner > i {
+  font-size: 20px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.exam-banner-warn {
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+.exam-banner-warn > i { color: #b45309; }
+.exam-banner-text { display: flex; flex-direction: column; gap: 2px; }
+.exam-banner-title { font-weight: 700; color: var(--gray-800); font-size: 13.5px; }
+.exam-banner-meta  { color: var(--gray-500); font-size: 12px; }
+
+/* ── Form ── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.icon-blue { color: var(--primary); }
+
+.form-input {
+  padding: 12px 16px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--gray-800);
+  background: #fff;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  font-family: var(--font);
+  outline: none;
+  width: 100%;
+}
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+}
+.form-input::placeholder { color: var(--gray-300); }
+.form-input.error { border-color: var(--red); }
+.form-input.error:focus { box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
+
+.field-error {
+  font-size: 12px;
+  color: var(--red);
+  min-height: 16px;
+  display: block;
+}
+
+/* ── Submit button ── */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 11px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background var(--transition), box-shadow var(--transition), transform .12s;
+  margin-top: 6px;
+  letter-spacing: .3px;
+}
+.btn-submit:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(37,99,235,.35);
+}
+.btn-submit:active { transform: scale(.98); }
+.btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+/* ── Footer note ── */
+.footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: var(--gray-400);
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ── Brand footer ── */
+.brand-footer {
+  font-size: 12px;
+  color: var(--gray-400);
+  text-align: center;
+}
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--gray-900);
+  color: #fff;
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error   { background: var(--red); }
+.toast.success { background: var(--green); }
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .login-card { padding: 28px 22px 24px; }
+  .card-heading h1 { font-size: 20px; }
+}

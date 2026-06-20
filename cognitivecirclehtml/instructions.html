@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Instructions – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/instructions.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <div class="page-wrap">
+
+    <!-- ── INSTRUCTIONS CARD ── -->
+    <div class="instr-card" id="instrCard">
+
+      <!-- Header -->
+      <div class="card-header">
+        <div class="logo-block">
+        <div class="logo-circle">
+          <img src="../cognitivecircleassets/logo.png" alt="Cognitive Circle logo" />
+        </div>
+          <div class="logo-text">
+            <span class="logo-main">COGNITIVE</span>
+            <span class="logo-sub">CIRCLE</span>
+          </div>
+        </div>
+        <div class="header-badge">
+          <i class="fa-solid fa-shield-halved"></i> CBT Platform
+        </div>
+      </div>
+
+      <!-- Candidate info strip -->
+      <div class="candidate-strip" id="candidateStrip">
+        <div class="candidate-info">
+          <div class="candidate-avatar" id="candidateAvatar">?</div>
+          <div>
+            <div class="candidate-name" id="candidateName">—</div>
+            <div class="candidate-reg"  id="candidateReg">—</div>
+          </div>
+        </div>
+        <a href="login.html" class="change-link">
+          <i class="fa-solid fa-pen"></i> Change
+        </a>
+      </div>
+
+      <!-- Exam title -->
+      <div class="exam-title-block">
+        <h1 id="examTitle">Loading Exam…</h1>
+        <span class="exam-type-pill" id="examTypePill">—</span>
+      </div>
+
+      <!-- ── EXAM DETAILS CARDS ── -->
+      <div class="details-grid" id="detailsGrid">
+        <div class="detail-card">
+          <div class="detail-icon blue">
+            <i class="fa-solid fa-book-open"></i>
+          </div>
+          <div class="detail-info">
+            <span class="detail-value" id="detSubject">—</span>
+            <span class="detail-label">Subject</span>
+          </div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-icon teal">
+            <i class="fa-solid fa-circle-question"></i>
+          </div>
+          <div class="detail-info">
+            <span class="detail-value" id="detQuestions">—</span>
+            <span class="detail-label">Questions</span>
+          </div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-icon orange">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="detail-info">
+            <span class="detail-value" id="detDuration">—</span>
+            <span class="detail-label">Duration</span>
+          </div>
+        </div>
+        <div class="detail-card">
+          <div class="detail-icon purple">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div class="detail-info">
+            <span class="detail-value" id="detMarks">—</span>
+            <span class="detail-label">Total Marks</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── INSTRUCTIONS ── -->
+      <div class="instructions-block">
+        <h2>
+          <i class="fa-solid fa-list-check"></i>
+          Exam Instructions
+        </h2>
+
+        <ul class="instructions-list">
+          <li>
+            <span class="instr-num">1</span>
+            <span>Ensure you have a <strong>stable internet connection</strong> before starting the exam.</span>
+          </li>
+          <li>
+            <span class="instr-num">2</span>
+            <span>Each question has only <strong>one correct answer</strong>. Select carefully before moving on.</span>
+          </li>
+          <li>
+            <span class="instr-num">3</span>
+            <span>The timer starts immediately once you click <strong>"Start Exam"</strong> and cannot be paused.</span>
+          </li>
+          <li>
+            <span class="instr-num">4</span>
+            <span>You may <strong>navigate between questions</strong> using the Previous and Next buttons.</span>
+          </li>
+          <li>
+            <span class="instr-num">5</span>
+            <span>Questions left unanswered will be marked as <strong>incorrect</strong>. Attempt all questions.</span>
+          </li>
+          <li>
+            <span class="instr-num">6</span>
+            <span>Do <strong>not refresh or close</strong> the browser tab during the exam as your progress may be lost.</span>
+          </li>
+          <li>
+            <span class="instr-num">7</span>
+            <span>Your exam will be <strong>submitted automatically</strong> when the timer reaches zero.</span>
+          </li>
+          <li>
+            <span class="instr-num">8</span>
+            <span>Use of mobile phones, textbooks, or any reference material is <strong>strictly prohibited</strong>.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ── AGREEMENT ── -->
+      <div class="agreement-block">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agreeCheck" onchange="onAgreeChange()" />
+          <span class="checkmark"></span>
+          <span>I have read and understood all the instructions above and I agree to abide by the exam rules.</span>
+        </label>
+      </div>
+
+      <!-- ── ACTION BUTTONS ── -->
+      <div class="action-buttons">
+        <a href="login.html" class="btn btn-back">
+          <i class="fa-solid fa-arrow-left"></i> Go Back
+        </a>
+        <button class="btn btn-start" id="btnStartExam" disabled onclick="startExam()">
+          <i class="fa-solid fa-play"></i>
+          <span id="startBtnLabel">Start Exam</span>
+        </button>
+      </div>
+
+      <!-- Warning note -->
+      <p class="warning-note" id="agreeNote">
+        <i class="fa-solid fa-circle-info"></i>
+        Please tick the checkbox above to enable the Start Exam button.
+      </p>
+
+    </div>
+    <!-- end instr-card -->
+
+    <p class="brand-footer">© 2024 The Cognitive Circle. All rights reserved.</p>
+
+  </div>
+
+  <!-- No exam state (shown if no exam found) -->
+  <div class="no-exam-overlay" id="noExamOverlay" style="display:none;">
+    <div class="no-exam-box">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <h2>No Exam Available</h2>
+      <p>No published exam was found. Please contact your instructor.</p>
+      <a href="login.html" class="btn btn-back" style="margin-top:16px;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Login
+      </a>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/instructions.js"></script>
+</body>
+</html>

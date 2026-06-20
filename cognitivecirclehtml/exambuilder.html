@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- KaTeX — LaTeX math rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="../cognitivecirclejs/mathrender.js"></script>
+<script defer src="https://unpkg.com/mathlive"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Builder – The Cognitive Circle</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/exambuilder.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="18" fill="#2563eb"/>
+          <path d="M10 18 Q18 8 26 18 Q18 28 10 18Z" fill="white" opacity="0.9"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">COGNITIVE</span>
+        <span class="logo-sub">CIRCLE</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="questionbank.html" class="nav-item">
+        <i class="fa-solid fa-database"></i>
+        <span>Question Bank</span>
+      </a>
+      <a href="exambuilder.html" class="nav-item active">
+        <i class="fa-solid fa-file-pen"></i>
+        <span>Exam Builder</span>
+      </a>
+      <a href="exam.html" class="nav-item">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>Exams</span>
+      </a>
+      <a href="results.html" class="nav-item">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Results</span>
+      </a>
+      <a href="leaderboard.html" class="nav-item">
+        <i class="fa-solid fa-trophy"></i>
+        <span>Leaderboard</span>
+      </a>
+      <a href="classroom.html" class="nav-item">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span>Classroom</span>
+      </a>
+      <a href="notes.html" class="nav-item">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Notes</span>
+      </a>
+      <a href="ai.html" class="nav-item">
+        <i class="fa-solid fa-robot"></i>
+        <span>AI Tutor</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- ===== MAIN WRAPPER ===== -->
+  <div class="main-wrapper">
+
+    <!-- TOP NAV -->
+    <header class="topnav">
+      <div class="topnav-left">
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="page-title">
+          <h1>Exam Builder</h1>
+          <p>Create custom exams from questions across subjects and topics</p>
+        </div>
+      </div>
+      <div class="topnav-right">
+        <button class="btn btn-outline" onclick="saveDraft()">
+          <i class="fa-regular fa-floppy-disk"></i> Save Draft
+        </button>
+        <button class="btn btn-primary" onclick="previewExam()">
+          <i class="fa-solid fa-eye"></i> Preview Exam
+        </button>
+        <button class="icon-btn" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button class="icon-btn notification-btn" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notif-dot"></span>
+        </button>
+        <div class="user-avatar" title="Profile">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area">
+
+      <!-- ===== STAT CARDS ROW ===== -->
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card blue-gradient">
+          <div class="stat-icon"><i class="fa-solid fa-circle-question"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTotalQ">0</span>
+            <span class="stat-label">Total Questions</span>
+          </div>
+        </div>
+        <div class="stat-card blue-gradient-2">
+          <div class="stat-icon"><i class="fa-solid fa-tags"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statTopics">0</span>
+            <span class="stat-label">Selected Topics</span>
+          </div>
+        </div>
+        <div class="stat-card blue-gradient-3">
+          <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statDuration">0</span>
+            <span class="stat-label">Duration (mins)</span>
+          </div>
+        </div>
+        <div class="stat-card blue-gradient-4">
+          <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+          <div class="stat-info">
+            <span class="stat-value" id="statMarks">0</span>
+            <span class="stat-label">Total Marks</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TWO-COLUMN LAYOUT ===== -->
+      <div class="builder-layout">
+
+        <!-- LEFT: MAIN CONTENT -->
+        <div class="builder-main">
+
+          <!-- SECTION 1: EXAM DETAILS -->
+          <div class="card" id="examDetailsCard">
+            <div class="card-header">
+              <div class="section-number">1.</div>
+              <h2>Exam Details</h2>
+            </div>
+            <div class="card-body">
+
+              <div class="form-row-3">
+                <div class="form-group">
+                  <label for="examTitle">Exam Title</label>
+                  <div id="examTitleToolbar"></div>
+                  <input type="text" id="examTitle" class="form-input" placeholder="Enter exam title..." oninput="updatePreview()" />
+                </div>
+                <div class="form-group">
+                  <label for="subjectSelect">Subject</label>
+                  <div class="select-wrapper">
+                    <select id="subjectSelect" class="form-select" onchange="onSubjectChange()">
+                      <option value="">-- Select Subject --</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="examDesc">Description <span class="optional">(Optional)</span></label>
+                  <input type="text" id="examDesc" class="form-input" placeholder="Enter exam description..." />
+                </div>
+              </div>
+
+              <div class="form-row-3 mt-16">
+                <div class="form-group">
+                  <label>
+                    <i class="fa-solid fa-clock icon-blue"></i> Duration
+                  </label>
+                  <div class="input-unit-group">
+                    <input type="number" id="examDuration" class="form-input" placeholder="60" min="1" oninput="updatePreviewStats()" />
+                    <div class="select-wrapper unit-select-wrapper">
+                      <select id="durationUnit" class="form-select unit-select">
+                        <option value="mins">mins</option>
+                        <option value="hours">hours</option>
+                      </select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="fa-solid fa-list-ol icon-blue"></i> Number of Questions
+                  </label>
+                  <div class="input-unit-group">
+                    <input type="number" id="examNumQ" class="form-input" placeholder="0" min="1" oninput="onNumQChange()" />
+                    <div class="select-wrapper unit-select-wrapper">
+                      <select class="form-select unit-select" disabled>
+                        <option>Questions</option>
+                      </select>
+                      <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>
+                    <i class="fa-solid fa-star icon-blue"></i> Total Marks
+                  </label>
+                  <div class="input-unit-group">
+                    <input type="number" id="examTotalMarks" class="form-input" placeholder="0" readonly />
+                    <span class="unit-label">Marks</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row-3 mt-16">
+                <div class="form-group">
+                  <label for="difficultyFilter">Difficulty Filter</label>
+                  <div class="select-wrapper">
+                    <select id="difficultyFilter" class="form-select" onchange="filterQuestions()">
+                      <option value="all">All Difficulty</option>
+                      <option value="Easy">Easy</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Hard">Hard</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="examType">Exam Type</label>
+                  <div class="select-wrapper">
+                    <select id="examType" class="form-select">
+                      <option value="practice">Practice Test</option>
+                      <option value="mock">Mock Exam</option>
+                      <option value="quiz">Quiz</option>
+                      <option value="assignment">Assignment</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-arrow"></i>
+                  </div>
+                </div>
+                <div class="form-group flex-end">
+                  <button class="btn btn-outline" onclick="saveDraft()">
+                    <i class="fa-regular fa-floppy-disk"></i> Save Draft
+                  </button>
+                  <button class="btn btn-primary ml-8" onclick="generateExam()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Exam
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- SECTION 2: ADD QUESTIONS -->
+          <div class="card mt-20" id="addQuestionsCard">
+            <div class="card-header">
+              <div class="section-number">2.</div>
+              <div>
+                <h2>Add Questions</h2>
+                <p class="card-subtitle">Select questions from different topics across the subject</p>
+              </div>
+            </div>
+            <div class="card-body">
+
+              <!-- Filters -->
+              <div class="filters-row">
+                <div class="select-wrapper filter-select">
+                  <select id="topicFilter" class="form-select" onchange="filterQuestions()">
+                    <option value="all">All Topics</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down select-arrow"></i>
+                </div>
+                <div class="select-wrapper filter-select">
+                  <select id="diffFilter" class="form-select" onchange="filterQuestions()">
+                    <option value="all">All Difficulty</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down select-arrow"></i>
+                </div>
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                  <input type="text" id="questionSearch" class="form-input search-input" placeholder="Search questions..." oninput="filterQuestions()" />
+                </div>
+              </div>
+
+              <!-- Questions Table -->
+              <div class="table-wrapper" id="questionsTableWrapper">
+                <!-- Empty state -->
+                <div class="empty-state" id="emptyQuestionsState">
+                  <div class="empty-icon"><i class="fa-solid fa-circle-question"></i></div>
+                  <h3>No Questions Available</h3>
+                  <p>Select a subject above to load questions from your Question Bank, or add questions in the <a href="questionbank.html">Question Bank</a>.</p>
+                </div>
+
+                <!-- Table (hidden until subject selected and questions exist) -->
+                <table class="questions-table" id="questionsTable" style="display:none;">
+                  <thead>
+                    <tr>
+                      <th class="col-check"></th>
+                      <th class="col-question">QUESTION</th>
+                      <th class="col-topic">TOPIC</th>
+                      <th class="col-diff">DIFFICULTY</th>
+                      <th class="col-marks">MARKS</th>
+                      <th class="col-action">ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody id="questionsTableBody"></tbody>
+                </table>
+              </div>
+
+              <!-- Load More -->
+              <div class="load-more-row" id="loadMoreRow" style="display:none;">
+                <button class="btn btn-load-more" onclick="loadMoreQuestions()">
+                  Load More Questions <i class="fa-solid fa-chevron-down"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: EXAM PREVIEW PANEL -->
+        <aside class="builder-sidebar">
+          <div class="card preview-card">
+            <div class="card-header">
+              <div class="section-number">3.</div>
+              <h2>Exam Preview</h2>
+            </div>
+            <div class="card-body">
+
+              <!-- Preview Stats -->
+              <div class="preview-stats">
+                <div class="preview-stat">
+                  <div class="preview-stat-icon blue">
+                    <i class="fa-solid fa-calendar-check"></i>
+                  </div>
+                  <div class="preview-stat-value" id="previewQCount">0</div>
+                  <div class="preview-stat-label">Questions</div>
+                </div>
+                <div class="preview-stat">
+                  <div class="preview-stat-icon teal">
+                    <i class="fa-solid fa-clock"></i>
+                  </div>
+                  <div class="preview-stat-value" id="previewDuration">0</div>
+                  <div class="preview-stat-label">Minutes</div>
+                </div>
+                <div class="preview-stat">
+                  <div class="preview-stat-icon yellow">
+                    <i class="fa-solid fa-star"></i>
+                  </div>
+                  <div class="preview-stat-value" id="previewMarks">0</div>
+                  <div class="preview-stat-label">Marks</div>
+                </div>
+              </div>
+
+              <!-- Topic Breakdown Chart -->
+              <div class="chart-section" id="topicChartSection">
+                <h4>Topic Breakdown</h4>
+                <div class="chart-container-wrap">
+                  <canvas id="topicChart" width="160" height="160"></canvas>
+                  <div class="chart-empty-msg" id="topicChartEmpty">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Add questions to see breakdown</span>
+                  </div>
+                </div>
+                <div class="chart-legend" id="topicLegend"></div>
+              </div>
+
+              <!-- Difficulty Breakdown Chart -->
+              <div class="chart-section" id="diffChartSection">
+                <h4>Difficulty Breakdown</h4>
+                <div class="chart-container-wrap">
+                  <canvas id="diffChart" width="160" height="160"></canvas>
+                  <div class="chart-empty-msg" id="diffChartEmpty">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Add questions to see breakdown</span>
+                  </div>
+                </div>
+                <div class="chart-legend" id="diffLegend"></div>
+              </div>
+
+              <!-- Questions In Exam List -->
+              <div class="exam-q-section">
+                <h4>Questions In Exam (<span id="examQCountLabel">0</span>)</h4>
+                <div id="examQList">
+                  <div class="empty-state-sm" id="examQEmpty">
+                    <i class="fa-solid fa-inbox"></i>
+                    <span>No questions added yet</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Preview Panel Actions -->
+              <div class="preview-actions">
+                <button class="btn btn-ghost-red full-width" onclick="clearAll()">
+                  <i class="fa-solid fa-trash-can"></i> Clear All
+                </button>
+                <button class="btn btn-primary full-width mt-8" onclick="saveExam()">
+                  <i class="fa-regular fa-floppy-disk"></i> Save Exam
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </aside>
+
+      </div>
+      <!-- END builder-layout -->
+
+      <!-- SECTION: GENERATED EXAM TABLE (shown after Generate Exam) -->
+      <div class="card mt-20" id="generatedExamCard" style="display:none;">
+        <div class="card-header">
+          <h2><i class="fa-solid fa-table-list icon-blue"></i> Generated Exam Questions</h2>
+          <span class="badge-count" id="generatedCount">0 Questions</span>
+        </div>
+        <div class="card-body">
+          <div class="table-wrapper">
+            <table class="questions-table generated-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>TOPIC</th>
+                  <th>QUESTION</th>
+                  <th>DIFFICULTY</th>
+                  <th>MARKS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="generatedTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- END content-area -->
+
+    <!-- ===== STICKY BOTTOM ACTION BAR ===== -->
+    <div class="bottom-action-bar">
+      <div class="bottom-bar-inner">
+        <button class="btn btn-outline" onclick="previewExam()">
+          <i class="fa-solid fa-eye"></i> Preview Exam
+        </button>
+        <button class="btn btn-outline" onclick="saveExam()">
+          <i class="fa-regular fa-floppy-disk"></i> Save Exam
+        </button>
+        <button class="btn btn-primary" onclick="publishExam()">
+          <i class="fa-solid fa-paper-plane"></i> Publish Exam
+        </button>
+        <button class="btn btn-outline" onclick="exportPDF()">
+          <i class="fa-solid fa-file-pdf"></i> Export PDF
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <!-- END main-wrapper -->
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== PREVIEW MODAL ===== -->
+  <div class="modal-overlay" id="previewModal" onclick="closePreviewModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Exam Preview</h3>
+        <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== PUBLISH SUCCESS MODAL ===== -->
+  <div class="modal-overlay" id="publishModal" onclick="closePublishModal(event)">
+    <div class="modal-box publish-modal-box">
+      <div class="publish-success-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3>Exam Published!</h3>
+      <p class="publish-modal-sub" id="publishModalSub">Your exam is live and ready for students.</p>
+
+      <div class="publish-link-block">
+        <p class="publish-link-label">
+          <i class="fa-solid fa-link"></i> Student Exam Link
+        </p>
+        <div class="publish-link-row">
+          <input type="text" class="publish-link-input" id="publishLinkInput" readonly />
+          <button class="btn-copy-link" id="btnCopyLink" onclick="copyExamLink()">
+            <i class="fa-regular fa-copy"></i> Copy
+          </button>
+        </div>
+        <p class="publish-link-hint">
+          Share this link with your students. They will first enter their name &amp; registration number, read instructions, then begin the exam.
+        </p>
+      </div>
+
+      <div class="publish-flow-steps">
+        <div class="flow-step">
+          <div class="flow-icon"><i class="fa-solid fa-user-pen"></i></div>
+          <span>Student Login</span>
+        </div>
+        <i class="fa-solid fa-arrow-right flow-arrow"></i>
+        <div class="flow-step">
+          <div class="flow-icon"><i class="fa-solid fa-list-check"></i></div>
+          <span>Instructions</span>
+        </div>
+        <i class="fa-solid fa-arrow-right flow-arrow"></i>
+        <div class="flow-step">
+          <div class="flow-icon"><i class="fa-solid fa-file-pen"></i></div>
+          <span>Exam</span>
+        </div>
+      </div>
+
+      <div class="publish-modal-actions">
+        <button class="btn btn-outline" onclick="closePublishModal()">
+          Close
+        </button>
+        <a class="btn btn-primary" id="publishOpenLink" href="#" target="_blank">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/exambuilder.js"></script>
+  <script src="../cognitivecirclejs/mathtoolbar.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initMathToolbar('examTitleToolbar', ['examTitle', 'examDesc']);
+    });
+  </script>
+</body>
+</html>

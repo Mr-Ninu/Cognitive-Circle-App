@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════
+#  THE COGNITIVE CIRCLE — Netlify Deployment Config
+#  Free static hosting — no backend server needed.
+#  All data is stored in Firebase Firestore.
+# ═══════════════════════════════════════════════════════════
+
+[build]
+  # No build step — pure HTML/CSS/JS
+  publish = "."
+
+# ── Cache HTML pages — always fresh ─────────────────────────
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    X-Frame-Options = "SAMEORIGIN"
+
+# ── Cache JS/CSS assets — 1 hour ─────────────────────────────
+[[headers]]
+  for = "/cognitivecirclejs/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/cognitivecirclecss/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/cognitivecircleassets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# ── Security headers ─────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"

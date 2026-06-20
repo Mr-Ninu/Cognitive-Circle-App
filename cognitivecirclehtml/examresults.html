@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exam Results – The Cognitive Circle Admin</title>
+  <link rel="stylesheet" href="../cognitivecirclecss/examresults.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    /* Notification bell */
+    .notif-wrap { position: relative; }
+    .notif-bell {
+      position: relative; width: 40px; height: 40px; border-radius: 10px;
+      border: 1px solid #e5e7eb; background: #fff; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #475569; transition: all .15s;
+    }
+    .notif-bell:hover { background: #f1f5f9; color: #2563eb; }
+    .notif-bell i { width: 18px; height: 18px; }
+    .notif-badge {
+      position: absolute; top: -4px; right: -4px;
+      min-width: 18px; height: 18px; padding: 0 5px;
+      background: #dc2626; color: #fff; font-size: 10.5px; font-weight: 700;
+      border-radius: 9px; display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff;
+    }
+    .notif-panel {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      width: 360px; max-height: 480px; background: #fff;
+      border: 1px solid #e5e7eb; border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(15,23,42,.12);
+      opacity: 0; visibility: hidden; transform: translateY(-6px);
+      transition: all .18s; z-index: 1000; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .notif-panel.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .notif-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-bottom: 1px solid #f1f5f9;
+      font-weight: 700; font-size: 14px; color: #0f172a;
+    }
+    .notif-clear {
+      border: none; background: transparent; color: #2563eb;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .notif-clear:hover { text-decoration: underline; }
+    .notif-list { overflow-y: auto; flex: 1; }
+    .notif-empty { padding: 32px 16px; text-align: center; color: #94a3b8; font-size: 13px; }
+    .notif-item {
+      position: relative; display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 16px 12px 22px; border-bottom: 1px solid #f8fafc;
+      transition: background .12s;
+    }
+    .notif-item:hover { background: #f8fafc; }
+    .notif-item.unread { background: #eff6ff; }
+    .notif-item.unread:hover { background: #dbeafe; }
+    .notif-dot {
+      position: absolute; left: 10px; top: 20px;
+      width: 7px; height: 7px; border-radius: 50%; background: #2563eb;
+    }
+    .notif-icon {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 12px; font-weight: 700;
+    }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-text { font-size: 13px; color: #1e293b; line-height: 1.35; }
+    .notif-meta { font-size: 11.5px; color: #64748b; margin-top: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 36 36" fill="none">
+          <circle cx="18" cy="18" r="18" fill="#2563eb"/>
+          <path d="M10 18 Q18 8 26 18 Q18 28 10 18Z" fill="white" opacity="0.92"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">THE COGNITIVE CIRCLE</span>
+        <span class="logo-sub">ADMIN PORTAL</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i data-lucide="layout-dashboard"></i><span class="nav-label">Dashboard</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="users"></i><span class="nav-label">Students</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="graduation-cap"></i><span class="nav-label">Classes</span>
+      </a>
+      <a href="questionbank.html" class="nav-item">
+        <i data-lucide="book-open"></i><span class="nav-label">Subjects</span>
+      </a>
+      <a href="exambuilder.html" class="nav-item">
+        <i data-lucide="pencil-line"></i><span class="nav-label">Exam Builder</span>
+      </a>
+      <a href="questionbank.html" class="nav-item">
+        <i data-lucide="database"></i><span class="nav-label">Question Bank</span>
+      </a>
+      <a href="examresults.html" class="nav-item active">
+        <i data-lucide="bar-chart-2"></i><span class="nav-label">Results</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i data-lucide="trending-up"></i><span class="nav-label">Analytics</span>
+      </a>
+      <a href="leaderboard.html" class="nav-item">
+        <i data-lucide="trophy"></i><span class="nav-label">Leaderboard</span>
+      </a>
+     
+      <div class="nav-divider"></div>
+      <a href="#" class="nav-item">
+        <i data-lucide="settings"></i><span class="nav-label">Settings</span>
+      </a>
+      <a href="login.html" class="nav-item logout">
+        <i data-lucide="log-out"></i><span class="nav-label">Logout</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">AD</div>
+      <div class="user-info">
+        <span class="user-name">Admin</span>
+        <span class="user-role">Super Admin</span>
+        <span class="user-status"><span class="status-dot"></span>Online</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="page-title-wrap">
+          <h1 class="page-title">Exam Results</h1>
+          <p class="page-subtitle">Track and analyse student performance across exams and subjects</p>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-export" id="exportBtn">
+          <i data-lucide="download"></i> Export Report
+        </button>
+
+        <!-- Notification bell -->
+        <div class="notif-wrap">
+          <button class="notif-bell" id="notifBell" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+          </button>
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-header">
+              <span>Notifications</span>
+              <button class="notif-clear" id="notifClear">Mark all as read</button>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+
+        <div class="admin-badge">
+          <div class="admin-avatar">AD</div>
+          <div>
+            <div class="admin-name">Admin</div>
+            <div class="admin-role">Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- ── OVERVIEW STATS ─────────────────────────── -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#2563eb">
+            <i data-lucide="file-text"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Exams Taken</span>
+            <span class="stat-num" id="statTotalExams">—</span>
+            <span class="stat-trend"><i data-lucide="trending-up"></i> Live data</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#16a34a">
+            <i data-lucide="users"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Total Students</span>
+            <span class="stat-num" id="statTotalStudents">—</span>
+            <span class="stat-trend"><i data-lucide="trending-up"></i> Unique candidates</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#ea580c">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Average Score</span>
+            <span class="stat-num" id="statAvgScore">—</span>
+            <span class="stat-trend"><i data-lucide="activity"></i> All time</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#7c3aed">
+            <i data-lucide="award"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Highest Score</span>
+            <span class="stat-num" id="statHighest">—</span>
+            <span class="stat-trend" id="statHighestLabel" style="font-weight:400;color:var(--gray-400)"></span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#0891b2">
+            <i data-lucide="check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label">Pass Rate</span>
+            <span class="stat-num" id="statPassRate">—</span>
+            <span class="stat-trend"><i data-lucide="trending-up"></i> ≥ 40%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MAIN CONTENT + SIDEBAR ─────────────────── -->
+      <div class="two-col">
+
+        <!-- LEFT: Results table panel -->
+        <div class="panel">
+
+          <!-- Tabs -->
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="student">Student Performance</button>
+            <button class="tab-btn" data-tab="exam">Exam Performance</button>
+            <button class="tab-btn" data-tab="subject">Subject Performance</button>
+          </div>
+
+          <!-- Controls -->
+          <div class="controls-bar">
+            <div class="search-wrap">
+              <i data-lucide="search"></i>
+              <input type="text" id="searchInput" placeholder="Search student…" />
+            </div>
+            <select class="filter-select" id="examFilter">
+              <option value="">All Exams</option>
+            </select>
+            <select class="filter-select" id="subjectFilter">
+              <option value="">All Subjects</option>
+            </select>
+            <select class="filter-select" id="sortFilter" title="Sort results">
+              <option value="score-desc">Score: High → Low</option>
+              <option value="score-asc">Score: Low → High</option>
+              <option value="date-desc">Most Recent</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="name-asc">Name (A–Z)</option>
+            </select>
+            <span class="total-label" id="totalLabel"></span>
+          </div>
+
+          <!-- Loading -->
+          <div class="loading-wrap" id="tableLoading">
+            <div class="spinner"></div>
+            <span>Loading results…</span>
+          </div>
+
+          <!-- Table -->
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Student</th>
+                  <th>Exam</th>
+                  <th>Subject</th>
+                  <th>Score</th>
+                  <th>Correct</th>
+                  <th>Incorrect</th>
+                  <th>Unattempted</th>
+                  <th>Time Taken</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination" id="pagination"></div>
+        </div>
+
+        <!-- RIGHT: Charts & Top Students -->
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <!-- Score distribution -->
+          <div class="panel dist-panel">
+            <div class="panel-header">
+              <h2 class="panel-title"><i data-lucide="pie-chart"></i> Score Distribution</h2>
+            </div>
+            <div class="dist-body">
+              <div class="donut-wrap">
+                <canvas id="donutChart"></canvas>
+              </div>
+              <ul class="dist-legend" id="distLegend"></ul>
+            </div>
+          </div>
+
+          <!-- Top performing students -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title"><i data-lucide="star"></i> Top Performing Students</h2>
+              <a href="leaderboard.html" class="view-all-link">View All</a>
+            </div>
+            <div id="topStudentsList"></div>
+          </div>
+
+          <!-- Download reports -->
+          <div class="panel">
+            <div class="panel-header">
+              <h2 class="panel-title"><i data-lucide="download-cloud"></i> Download Reports</h2>
+            </div>
+            <div class="report-row" onclick="document.getElementById('exportBtn').click()">
+              <div class="report-icon"><i data-lucide="file-spreadsheet"></i></div>
+              <div class="report-info">
+                <div class="report-name">Individual Score Sheet</div>
+                <div class="report-desc">Download student-wise score report</div>
+              </div>
+              <button class="report-dl report-dl--csv" data-type="csv">
+                <i data-lucide="download"></i>
+              </button>
+            </div>
+            <div class="report-row" onclick="document.getElementById('exportBtn').click()">
+              <div class="report-icon"><i data-lucide="book-open"></i></div>
+              <div class="report-info">
+                <div class="report-name">Subject Wise Report</div>
+                <div class="report-desc">Download subject performance report</div>
+              </div>
+              <button class="report-dl" data-type="subject">
+                <i data-lucide="download"></i>
+              </button>
+            </div>
+            <div class="report-row" onclick="document.getElementById('exportBtn').click()">
+              <div class="report-icon"><i data-lucide="clipboard-list"></i></div>
+              <div class="report-info">
+                <div class="report-name">Exam Summary Report</div>
+                <div class="report-desc">Download exam summary report</div>
+              </div>
+              <button class="report-dl" data-type="summary">
+                <i data-lucide="download"></i>
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /right col -->
+      </div><!-- /two-col -->
+
+      <!-- ── QUESTION ANALYSIS ───────────────────────── -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2 class="panel-title"><i data-lucide="bar-chart-2"></i> Question Analysis <span style="font-size:12px;font-weight:400;color:var(--gray-400);margin-left:6px;" id="qaLabel"></span></h2>
+          <a href="#" class="view-all-link">View All Questions</a>
+        </div>
+        <div class="qa-grid">
+          <!-- Summary donut -->
+          <div class="qa-summary">
+            <div class="qa-donut"><canvas id="qaDonut"></canvas></div>
+            <ul class="qa-legend">
+              <li>
+                <span class="dist-dot" style="background:#16a34a"></span>
+                <span class="dist-label">Correct Answers</span>
+                <span class="dist-pct" id="qaCorrect">—</span>
+              </li>
+              <li>
+                <span class="dist-dot" style="background:#dc2626"></span>
+                <span class="dist-label">Incorrect Answers</span>
+                <span class="dist-pct" id="qaWrong">—</span>
+              </li>
+              <li>
+                <span class="dist-dot" style="background:#94a3b8"></span>
+                <span class="dist-label">Unattempted</span>
+                <span class="dist-pct" id="qaSkipped">—</span>
+              </li>
+            </ul>
+            <div style="margin-top:8px;font-size:12px;color:var(--gray-400);text-align:center;">
+              Total Questions: <strong id="qaTotal">—</strong>
+            </div>
+          </div>
+          <!-- Most missed questions -->
+          <div>
+            <p style="font-size:13.5px;font-weight:700;color:var(--gray-900);margin-bottom:12px;">Most Missed Questions</p>
+            <div class="table-wrap">
+              <table class="missed-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Question</th>
+                    <th>Topic</th>
+                    <th>Incorrect %</th>
+                  </tr>
+                </thead>
+                <tbody id="missedTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+
+    <footer class="main-footer">
+      <span>© 2025 The Cognitive Circle. All rights reserved.</span>
+      <span class="footer-tagline">Practice Beyond Limits.</span>
+    </footer>
+  </main>
+
+  <!-- ── RESULT DETAIL MODAL ──────────────────── -->
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title" id="modalTitle">Result Details</span>
+        <button class="modal-close" id="modalClose"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+<script src="../cognitivecirclejs/firebase-db.js"></script>
+  <script src="../cognitivecirclejs/examresults.js"></script>
+</body>
+</html>
