@@ -133,11 +133,19 @@ function updateGrid() {
     const btn = document.getElementById(`gb-${i}`);
     if (!btn) return;
     btn.className = 'grid-btn';
-    if (i === exam.current)          btn.classList.add('current');
-    else if (exam.flagged.has(i))    btn.classList.add('flagged');
+    if (i === exam.current)           btn.classList.add('current');
+    else if (exam.flagged.has(i))     btn.classList.add('flagged');
     else if (exam.answers[i] != null) btn.classList.add('answered');
   });
   updateOverview();
+
+  // Keep the mobile panel badge showing answered count
+  const badge = document.getElementById('panelBadge');
+  if (badge) {
+    const answered = Object.keys(exam.answers)
+      .filter(k => exam.answers[k] != null && exam.answers[k] !== '').length;
+    badge.textContent = answered;
+  }
 }
 
 // ─── Render question ─────────────────────────────
@@ -279,6 +287,14 @@ function reviewFlagged() {
   const flags = [...exam.flagged];
   if (!flags.length) { showToast('No flagged questions', 'warn'); return; }
   goTo(flags[0]);
+}
+
+function toggleSidebarPanel() {
+  const panel   = document.getElementById('sidebarPanel');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!panel || !overlay) return;
+  const isOpen = panel.classList.toggle('open');
+  overlay.classList.toggle('visible', isOpen);
 }
 
 // ─── Confirm end ─────────────────────────────────

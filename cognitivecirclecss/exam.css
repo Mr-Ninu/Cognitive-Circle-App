@@ -681,53 +681,185 @@ body {
 /* ══════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════ */
-/* Large screens — wider sidebar and more breathing room */
+
+/* ── Large screens ─────────────────────── */
 @media (min-width: 1200px) {
   :root { --sidebar-w: 360px; }
   .exam-main { grid-template-columns: 1fr var(--sidebar-w); }
   .question-panel { padding: 32px; }
   .q-text { font-size: 18px; line-height: 1.7; }
   .q-image { max-height: 360px; }
-  .sidebar-panel { position: sticky; top: calc(var(--topbar-h) + var(--strip-h)); height: calc(100vh - var(--topbar-h) - var(--strip-h)); }
   .q-grid { grid-template-columns: repeat(10, 1fr); }
+  .btn-panel-toggle { display: none; }
+  .sidebar-overlay { display: none !important; }
 }
 
-/* Medium screens — comfortable two-column layout */
+/* ── Medium screens ────────────────────── */
 @media (min-width: 900px) and (max-width: 1199px) {
   :root { --sidebar-w: 300px; }
   .exam-main { grid-template-columns: 1fr var(--sidebar-w); }
   .question-panel { padding: 24px; }
   .q-text { font-size: 17px; }
   .q-grid { grid-template-columns: repeat(8, 1fr); }
+  .btn-panel-toggle { display: none; }
+  .sidebar-overlay { display: none !important; }
 }
 
-/* Small screens — single column, compact spacing and sticky bottom nav */
+/* ── Mobile — single column, drawer sidebar ── */
 @media (max-width: 899px) {
-  :root { --sidebar-w: 240px; }
-  .exam-main { grid-template-columns: 1fr; }
-  .sidebar-panel { position: static; max-height: none; border-top: 1px solid var(--gray-200); }
-  .topbar { padding: 0 14px; gap: 8px; }
+
+  /* Topbar */
+  .topbar { padding: 0 12px; gap: 6px; }
   .brand-name { font-size: 13px; }
-  .timer-display { font-size: 18px; }
-  .candidate-strip { gap: 10px; flex-wrap: wrap; height: auto; padding: 8px 12px; }
-  .candidate-field { border-right: none; margin-right: 0; padding-right: 0; }
-  .question-panel { padding: 12px; }
-  .q-text { font-size: 15px; line-height: 1.5; }
+  .brand-subject { display: none; }
+  .timer-display { font-size: 17px; }
+  .timer-block { padding: 6px 12px; gap: 8px; }
+  .timer-label { display: none; }
+
+  /* Hide calculator text, show icon only */
+  .btn-calc .calc-chevron,
+  .btn-calc > span { display: none; }
+
+  /* Panel toggle button — always visible */
+  .btn-panel-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--primary-light);
+    border: 1.5px solid var(--primary);
+    border-radius: 9px;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+  }
+  .panel-toggle-count {
+    position: absolute;
+    top: -6px; right: -6px;
+    min-width: 18px; height: 18px;
+    padding: 0 4px;
+    background: var(--green);
+    color: #fff;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+  }
+
+  /* "End Exam" text hidden, icon only */
+  .btn-end { padding: 8px 12px; }
+  .btn-end span { display: none; }
+
+  /* Candidate strip — horizontal scroll */
+  .candidate-strip {
+    height: auto;
+    padding: 6px 12px;
+    gap: 0;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .candidate-field {
+    flex-shrink: 0;
+    padding-right: 16px;
+    margin-right: 16px;
+    font-size: 12px;
+  }
+  .candidate-field > i { display: none; }
+
+  /* Main layout — single column */
+  .exam-main {
+    display: block;
+    height: calc(100vh - var(--topbar-h) - 38px - var(--bottom-h));
+    overflow: hidden;
+  }
+
+  /* Question panel fills full width */
+  .question-panel {
+    width: 100%;
+    height: 100%;
+    padding: 16px;
+    border-right: none;
+    overflow-y: auto;
+  }
+
+  .q-text { font-size: 15px; line-height: 1.55; }
   .q-image { max-height: 200px; }
-  .option-item { padding: 10px 12px; gap: 10px; }
+  .option-item { padding: 11px 14px; gap: 10px; }
   .opt-text { font-size: 14px; }
-  .q-grid { grid-template-columns: repeat(8, 1fr); }
+  .btn-nav { padding: 10px 20px; font-size: 13px; }
+
+  /* Sidebar — slides in from right as a drawer */
+  .sidebar-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(320px, 88vw);
+    background: #fff;
+    z-index: 600;
+    box-shadow: -6px 0 32px rgba(0,0,0,.18);
+    overflow-y: auto;
+    padding: 20px 16px;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sidebar-panel.open {
+    transform: translateX(0);
+  }
+
+  /* Dark overlay behind the drawer */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 590;
+  }
+  .sidebar-overlay.visible { display: block; }
+
+  /* Add a close button inside the drawer */
+  .sidebar-panel::before {
+    content: '✕ Close';
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-500);
+    margin-bottom: 16px;
+    cursor: pointer;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  /* Denser grid on mobile */
+  .q-grid { grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .grid-btn { font-size: 10px; }
+
+  /* Bottom bar — simplified */
+  .bottom-bar { padding: 0 12px; gap: 10px; }
+  .bottom-info { display: none; }
+
+  /* Modal tweaks */
+  .modal-box { padding: 24px 18px; }
   .results-grid { grid-template-columns: repeat(2, 1fr); }
-  /* keep important actions visible */
-  .bottom-bar { height: 64px; padding: 0 12px; }
-  .btn-nav { padding: 10px 18px; }
 }
 
-/* Very small phones */
+/* ── Very small phones (< 480px) ──────── */
 @media (max-width: 480px) {
-  .topbar-center { display: none; }
-  .btn-end span { display: none; }
+  .topbar { padding: 0 10px; gap: 4px; }
+  .brand-logo { gap: 8px; }
   .brand-name { font-size: 12px; }
-  .timer-display { font-size: 16px; }
-  .q-text { font-size: 14px; }
+  .brand-icon { width: 34px; height: 34px; }
+  .timer-display { font-size: 16px; letter-spacing: 0.5px; }
+  .timer-block { padding: 5px 10px; }
+  .timer-icon { font-size: 14px; }
+  .q-text { font-size: 14.5px; }
+  .option-item { padding: 10px 12px; }
+  .q-grid { grid-template-columns: repeat(6, 1fr); }
+  .btn-nav { padding: 9px 14px; font-size: 13px; }
+  .modal-box { border-radius: 12px; padding: 20px 14px; }
 }

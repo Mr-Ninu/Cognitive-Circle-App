@@ -65,24 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
     buildLineChart(fresh.results);
   }, 30000);
 
-  // ── Listen for new exam results (real-time from other tabs/windows) ──
-  window.addEventListener('resultSubmitted', (e) => {
-    const result = e.detail;
-    if (result) {
-      // Show notification badge
-      const badge = document.querySelector('[data-results-badge]');
-      if (badge) {
-        badge.textContent = '●';
-        badge.style.color = '#10b981';
-        badge.title = 'New result received!';
-      }
-      // Reload data to reflect new result
-      const fresh = loadAllData();
-      updateStatCards(fresh);
-      buildActivityFeed(fresh);
-      buildLineChart(fresh.results);
-    }
-  });
+ // ── Listen for new exam results (real-time cross-tab via storage event) ──
+// resultSubmitted only fires in the same tab — storage event works across ALL tabs
+window.addEventListener('storage', (e) => {
+  if (e.key === 'cc_results' || e.key === 'cc_exams') {
+    const fresh = loadAllData();
+    updateStatCards(fresh);
+    buildRecentExamsTable(fresh.exams);
+    buildActivityFeed(fresh);
+    rebuildDonutChart(fresh.questions);
+    buildLineChart(fresh.results);
+    if (typeof renderNotifications === 'function') renderNotifications();
+  }
+});
 
 });
 

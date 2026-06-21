@@ -670,11 +670,34 @@ function startNewExam() {
   showToast('Ready to build a new exam', 'success');
 }
 
+function buildSlimExamForLink(exam) {
+  return {
+    id:           exam.id,
+    title:        exam.title,
+    subject:      exam.subject,
+    duration:     exam.duration,
+    durationUnit: exam.durationUnit,
+    numQuestions: exam.numQuestions,
+    totalMarks:   exam.totalMarks,
+    type:         exam.type,
+    status:       exam.status,
+    questions: (exam.questions || []).map(q => ({
+      id:            q.id,
+      question:      q.question,
+      type:          q.type,
+      options:       q.options,
+      correctAnswer: q.correctAnswer,
+      marks:         q.marks,
+      topic:         q.topic,
+    })),
+  };
+}
+
 function showPublishModal(exam) {
   // Build the student link: login.html?payload=<encoded exam>
   // Works for both local files and any hosted domain
   const base = window.location.href.replace(/exambuilder\.html.*$/, '');
-  const link = `${base}login.html?payload=${encodeURIComponent(encodeExamPayload(exam))}`;
+  const link = `${base}login.html?payload=${encodeURIComponent(encodeExamPayload(buildSlimExamForLink(exam)))}`;
 
   document.getElementById('publishModalSub').textContent =
     `"${exam.title}" is now live — ${exam.numQuestions} questions · ${exam.subject || 'No subject'}`;

@@ -42,8 +42,12 @@
       </div>
     </div>
 
-    <div class="topbar-right">
-      <div class="calc-wrapper">
+   <div class="topbar-right">
+  <button class="btn-panel-toggle" id="panelToggleBtn" onclick="toggleSidebarPanel()" aria-label="Question panel">
+    <i class="fa-solid fa-grip"></i>
+    <span class="panel-toggle-count" id="panelBadge">0</span>
+  </button>
+  <div class="calc-wrapper">
         <button class="btn-calc" id="calcToggle" onclick="toggleCalc()">
           <i class="fa-solid fa-calculator"></i> Calculator
           <i class="fa-solid fa-chevron-down calc-chevron" id="calcChevron"></i>
@@ -156,7 +160,7 @@
     </section>
 
     <!-- RIGHT: Sidebar Panel -->
-    <aside class="sidebar-panel">
+    <aside class="sidebar-panel" id="sidebarPanel">
 
       <!-- Question Grid -->
       <div class="panel-card">
@@ -263,6 +267,8 @@
     </div>
   </div>
 
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebarPanel()"></div>
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
