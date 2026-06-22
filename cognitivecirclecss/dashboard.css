@@ -17,7 +17,7 @@
   --sidebar-text:      rgba(226, 232, 255, 0.78);
   --sidebar-hover:     rgba(96, 165, 250, 0.10);
   --sidebar-active:    #2563EB;
-  --sidebar-gradient:  linear-gradient(180deg, #0F1A3D 0%, #0A1230 100%);
+  --sidebar-gradient:  linear-gradient(180deg, #0FFA3D 0%, #0A1230 100%);
   --brand-gradient:    linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
 
   /* Main */

@@ -13,12 +13,12 @@
 
 /* ── 1. PASTE YOUR FIREBASE CONFIG HERE ─────────────────────────── */
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID",
+  apiKey:            'AIzaSyD0ZbILLt3BUf1jkX8_qxOmn-0WWmB09yg',
+  authDomain:        'the-cognitive-circle-adm-ea2c1.firebaseapp.com',
+  projectId:         'the-cognitive-circle-adm-ea2c1',
+  storageBucket:     'the-cognitive-circle-adm-ea2c1.firebasestorage.app',
+  messagingSenderId: '763415223905',
+  appId:             '1:763415223905:web:e5562f06a2e2b6e3151420',
 };
 /* ── end config ───────────────────────────────────────────────────── */
 

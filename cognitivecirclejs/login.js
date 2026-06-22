@@ -35,20 +35,20 @@ async function loadExam() {
     }
   }
 
-  /* ── Try Firebase first, then localStorage ── */
+  /* ── Try Firebase / localStorage by exam ID ── */
+  if (!currentExam && examId) {
+    currentExam = await loadExamById(examId);
+  }
+
+  /* ── Otherwise fall back to published exams in localStorage or JSON file ── */
   if (!currentExam) {
     try {
       const raw  = localStorage.getItem('cc_exams') || '[]';
       const list = JSON.parse(raw) || [];
-      if (examId) {
-        currentExam = list.find(e => e.id === examId) || null;
-      }
-      if (!currentExam) {
-        const published = list.filter(e => e.status === 'published');
-        currentExam = published.length
-          ? published[published.length - 1]
-          : list[list.length - 1] || null;
-      }
+      const published = list.filter(e => e.status === 'published');
+      currentExam = published.length
+        ? published[published.length - 1]
+        : list[list.length - 1] || null;
     } catch (_) {
       currentExam = null;
     }
@@ -162,6 +162,23 @@ function handleSubmit(e) {
       : (currentExam ? `?exam=${currentExam.id}` : '');
     window.location.href = `instructions.html${nextParam}`;
   }, 500);
+}
+
+async function loadExamById(examId) {
+  if (window.CCDB && typeof CCDB.getExam === 'function') {
+    try {
+      const exam = await CCDB.getExam(examId);
+      if (exam) return exam;
+    } catch (_) {}
+  }
+
+  try {
+    const raw  = localStorage.getItem('cc_exams') || '[]';
+    const list = JSON.parse(raw) || [];
+    return list.find(e => e.id === examId) || null;
+  } catch (_) {
+    return null;
+  }
 }
 
 function parseExamPayload(payload) {

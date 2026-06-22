@@ -34,10 +34,27 @@ function getOrCreateExamId() {
   if (state.currentExamId) return state.currentExamId;
   const stored = localStorage.getItem('cc_current_exam_id');
   if (stored) { state.currentExamId = stored; return stored; }
-  const id = `exam_${Date.now()}`;
+  const id = `exam_${createShortId(12)}`;
   state.currentExamId = id;
   localStorage.setItem('cc_current_exam_id', id);
   return id;
+}
+
+function createShortId(length) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+function getCurrentUserSession() {
+  try {
+    return JSON.parse(localStorage.getItem('cc_session') || 'null');
+  } catch (_) {
+    return null;
+  }
 }
 
 // ─── Autosave (debounced, runs 1.5 s after last change) ──
@@ -610,7 +627,8 @@ function clearAll() {
 
 // ─── Build exam object ───────────────────────────
 function buildExamObject(status) {
-  return {
+  const user = getCurrentUserSession();
+  const exam = {
     id:           getOrCreateExamId(),
     title:        document.getElementById('examTitle').value.trim(),
     subject:      document.getElementById('subjectSelect').value,
@@ -625,6 +643,15 @@ function buildExamObject(status) {
     status:       status,
     createdAt:    new Date().toISOString(),
   };
+
+  if (user && user.uid) {
+    exam.ownerUid   = user.uid;
+    exam.ownerEmail = user.email;
+    exam.ownerName  = user.name;
+    exam.ownerRole  = user.role;
+  }
+
+  return exam;
 }
 
 // ─── Save / Draft / Publish ──────────────────────
@@ -694,10 +721,10 @@ function buildSlimExamForLink(exam) {
 }
 
 function showPublishModal(exam) {
-  // Build the student link: login.html?payload=<encoded exam>
-  // Works for both local files and any hosted domain
+  // Build the student link: login.html?exam=<short exam ID>
+  // This keeps generated publish links short and stable.
   const base = window.location.href.replace(/exambuilder\.html.*$/, '');
-  const link = `${base}login.html?payload=${encodeURIComponent(encodeExamPayload(buildSlimExamForLink(exam)))}`;
+  const link = `${base}login.html?exam=${encodeURIComponent(exam.id)}`;
 
   document.getElementById('publishModalSub').textContent =
     `"${exam.title}" is now live — ${exam.numQuestions} questions · ${exam.subject || 'No subject'}`;
